@@ -1,0 +1,21 @@
+syntax="proto2";
+package node;
+option java_package="com.kongyt.node.messages";
+
+
+
+enum EleMsg{
+  EM_HELO                   = 0x00000001;
+}
+
+// ElementMsg自身消息ID为0x00000000
+message ElementMsg{
+  optional int32  msgId         = 1;
+  optional string from_element  = 2;
+  optional string to_element    = 3;
+  optional string serializeData = 4;    // 序列化后的数据
+}
+
+message Helo{
+  optional string txt           = 1;
+}

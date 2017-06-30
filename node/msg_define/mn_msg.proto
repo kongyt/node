@@ -1,0 +1,125 @@
+syntax="proto2";
+package node;
+option java_package="com.kongyt.node.messages";
+
+enum MN_Msg{
+
+  N2M_Node_Connect_Req      = 0x00010001;
+  M2N_Node_Connect_Res      = 0x00010002;
+  
+  N2M_Get_Node_Id_Req       = 0x00010003;
+  M2N_Get_Node_Id_Res       = 0x00010004;
+  
+  N2M_Get_Node_List_Req     = 0x00010005;
+  M2N_Get_Node_List_Res     = 0x00010006;
+  
+  N2M_Register_Static_Element_Req      = 0x00010007;
+  M2N_Register_Static_Element_Res      = 0x00010008;
+  
+  N2M_Register_Dynamic_Element_Req     = 0x00010009;
+  M2N_Register_Dynamic_Element_Res     = 0x0001000A;
+  
+  N2M_Unregister_Element_Req           = 0x0001000B;
+  M2N_Unregister_Element_Res           = 0x0001000C;
+  
+  N2M_Query_Element_Req                = 0x0001000D;
+  M2N_Query_Element_Res                = 0x0001000E;
+}
+
+
+message N2M_Request{
+  optional N2M_NodeConnectReq   nodeConnectReq  = 1;
+  optional N2M_GetNodeIdReq     getNodeIdReq    = 2;
+  optional N2M_GetNodeListReq   getNodeListReq  = 3;
+  optional N2M_RegisterStaticElementReq    registerStaticElementReq   = 4;
+  optional N2M_RegisterDynamicElementReq   registerDynamicElementReq  = 5;
+  optional N2M_UnregisterElementReq        unregisterElementReq       = 6;
+  optional N2M_QueryElementReq             queryElementReq            = 7;
+}
+
+message M2N_Response{
+  optional bool             result          = 1;
+  optional string           errorStr        = 2;
+  optional M2N_NodeConnectRes   nodeConnectRes  = 3;
+  optional M2N_GetNodeIdRes     getNodeIdRes    = 4;
+  optional M2N_GetNodeListRes   getNodeListRes  = 5;
+  optional M2N_RegisterStaticElementRes    registerStaticElementRes   = 6;
+  optional M2N_RegisterDynamicElementRes   registerDynamicElementRes  = 7;
+  optional M2N_UnregisterElementRes        unregisterElementRes       = 8;
+  optional N2M_QueryElementRes             queryElementRes            = 9;
+}
+
+// Node 连接Master
+message N2M_NodeConnectReq{
+  optional bool             hasNodeId       = 1;
+  optional int32            nodeId          = 2;
+  optional string           host            = 3;
+  optional int32            port            = 4;
+}
+
+message M2N_NodeConnectRes{
+  // empty
+}
+
+// 获取Node Id
+message N2M_GetNodeIdReq{
+  // empty
+}
+
+message M2N_GetNodeIdRes{
+  optional int32            nodeId          = 1;
+}
+
+// 获取Node节点列表
+message N2M_GetNodeListReq{
+  // empty
+}
+
+message M2N_NodeInfo{
+  optional int32            nodeId          = 1;
+  optional string           host            = 2;
+  optional int32            port            = 3;
+}
+
+message M2N_GetNodeListRes{
+  repeated M2N_NodeInfo         nodes           = 1; 
+}
+
+// 注册静态元素，指定固定且广泛周知的uuid
+message N2M_RegisterStaticElementReq{
+  optional int32        nodeId      = 1;
+  optional string       uuid        = 2;
+}
+
+message M2N_RegisterStaticElementRes{
+  // empty
+}
+
+// 注册动态元素，生产并返回uuid
+message N2M_RegisterDynamicElementReq{
+  optional int32        nodeId      = 1;
+}
+
+message M2N_RegisterDynamicElementRes{
+  optional string       uuid        = 1;
+}
+
+
+// 取消注册元素
+message N2M_UnregisterElementReq{
+  optional string       uuid        = 1;
+}
+
+message M2N_UnregisterElementRes{
+  // empty
+}
+
+// 查询元素，返回nodeid
+message N2M_QueryElementReq{
+  optional string       uuid        = 1;
+}
+
+message N2M_QueryElementRes{
+  optional string       uuid        = 1;
+  optional int32        nodeId      = 2;
+}

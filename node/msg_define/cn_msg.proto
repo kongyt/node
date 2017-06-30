@@ -1,0 +1,41 @@
+syntax="proto2";
+package node;
+option java_package="com.kongyt.node.messages";
+
+
+enum CN_Msg{
+  C2N_Client_Connect_Req    = 0x00030001;
+  N2C_Client_Connect_Res    = 0x00030002;
+  
+  C2N_Client_Disconn_Req    = 0x00030003;
+  N2C_Client_Disconn_Res    = 0x00030004;
+}
+
+
+message C2N_Request{
+  optional C2N_ClientConnectReq   clientConnectReq    = 1;
+  optional C2N_ClientDisconnReq   clientDisconnReq    = 2;
+}
+
+message N2C_Response{
+  optional bool                     result          = 1;
+  optional string                   errorStr        = 2;
+  optional N2C_ClientConnectRes     clientConnectRes = 3;
+  optional N2C_ClientDisconnRes     clientDisconnRes = 4;
+}
+
+message C2N_ClientConnectReq{
+  // empty
+}
+
+message N2C_ClientConnectRes{
+  optional string       uuid    = 1;
+}
+
+message C2N_ClientDisconnReq{
+  // empty
+}
+
+message N2C_ClientDisconnRes{
+  // empty
+}
