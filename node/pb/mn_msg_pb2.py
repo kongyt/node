@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='mn_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x0cmn_msg.proto\x12\x04node\"\x9f\x03\n\x0bN2M_Request\x12\x30\n\x0enodeConnectReq\x18\x01 \x01(\x0b\x32\x18.node.N2M_NodeConnectReq\x12,\n\x0cgetNodeIdReq\x18\x02 \x01(\x0b\x32\x16.node.N2M_GetNodeIdReq\x12\x30\n\x0egetNodeListReq\x18\x03 \x01(\x0b\x32\x18.node.N2M_GetNodeListReq\x12\x44\n\x18registerStaticElementReq\x18\x04 \x01(\x0b\x32\".node.N2M_RegisterStaticElementReq\x12\x46\n\x19registerDynamicElementReq\x18\x05 \x01(\x0b\x32#.node.N2M_RegisterDynamicElementReq\x12<\n\x14unregisterElementReq\x18\x06 \x01(\x0b\x32\x1e.node.N2M_UnregisterElementReq\x12\x32\n\x0fqueryElementReq\x18\x07 \x01(\x0b\x32\x19.node.N2M_QueryElementReq\"\xc2\x03\n\x0cM2N_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x30\n\x0enodeConnectRes\x18\x03 \x01(\x0b\x32\x18.node.M2N_NodeConnectRes\x12,\n\x0cgetNodeIdRes\x18\x04 \x01(\x0b\x32\x16.node.M2N_GetNodeIdRes\x12\x30\n\x0egetNodeListRes\x18\x05 \x01(\x0b\x32\x18.node.M2N_GetNodeListRes\x12\x44\n\x18registerStaticElementRes\x18\x06 \x01(\x0b\x32\".node.M2N_RegisterStaticElementRes\x12\x46\n\x19registerDynamicElementRes\x18\x07 \x01(\x0b\x32#.node.M2N_RegisterDynamicElementRes\x12<\n\x14unregisterElementRes\x18\x08 \x01(\x0b\x32\x1e.node.M2N_UnregisterElementRes\x12\x32\n\x0fqueryElementRes\x18\t \x01(\x0b\x32\x19.node.N2M_QueryElementRes\"S\n\x12N2M_NodeConnectReq\x12\x11\n\thasNodeId\x18\x01 \x01(\x08\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05\x12\x0c\n\x04host\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\x05\"\x14\n\x12M2N_NodeConnectRes\"\x12\n\x10N2M_GetNodeIdReq\"\"\n\x10M2N_GetNodeIdRes\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"\x14\n\x12N2M_GetNodeListReq\":\n\x0cM2N_NodeInfo\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04host\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"7\n\x12M2N_GetNodeListRes\x12!\n\x05nodes\x18\x01 \x03(\x0b\x32\x12.node.M2N_NodeInfo\"<\n\x1cN2M_RegisterStaticElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04uuid\x18\x02 \x01(\t\"\x1e\n\x1cM2N_RegisterStaticElementRes\"/\n\x1dN2M_RegisterDynamicElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"-\n\x1dM2N_RegisterDynamicElementRes\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"(\n\x18N2M_UnregisterElementReq\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"\x1a\n\x18M2N_UnregisterElementRes\"#\n\x13N2M_QueryElementReq\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"3\n\x13N2M_QueryElementRes\x12\x0c\n\x04uuid\x18\x01 \x01(\t\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05*\xcc\x03\n\x06MN_Msg\x12\x1a\n\x14N2M_Node_Connect_Req\x10\x81\x80\x04\x12\x1a\n\x14M2N_Node_Connect_Res\x10\x82\x80\x04\x12\x19\n\x13N2M_Get_Node_Id_Req\x10\x83\x80\x04\x12\x19\n\x13M2N_Get_Node_Id_Res\x10\x84\x80\x04\x12\x1b\n\x15N2M_Get_Node_List_Req\x10\x85\x80\x04\x12\x1b\n\x15M2N_Get_Node_List_Res\x10\x86\x80\x04\x12%\n\x1fN2M_Register_Static_Element_Req\x10\x87\x80\x04\x12%\n\x1fM2N_Register_Static_Element_Res\x10\x88\x80\x04\x12&\n N2M_Register_Dynamic_Element_Req\x10\x89\x80\x04\x12&\n M2N_Register_Dynamic_Element_Res\x10\x8a\x80\x04\x12 \n\x1aN2M_Unregister_Element_Req\x10\x8b\x80\x04\x12 \n\x1aM2N_Unregister_Element_Res\x10\x8c\x80\x04\x12\x1b\n\x15N2M_Query_Element_Req\x10\x8d\x80\x04\x12\x1b\n\x15M2N_Query_Element_Res\x10\x8e\x80\x04\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x0cmn_msg.proto\x12\x04node\"\x9f\x03\n\x0bN2M_Request\x12\x30\n\x0enodeConnectReq\x18\x01 \x01(\x0b\x32\x18.node.N2M_NodeConnectReq\x12,\n\x0cgetNodeIdReq\x18\x02 \x01(\x0b\x32\x16.node.N2M_GetNodeIdReq\x12\x30\n\x0egetNodeListReq\x18\x03 \x01(\x0b\x32\x18.node.N2M_GetNodeListReq\x12\x44\n\x18registerStaticElementReq\x18\x04 \x01(\x0b\x32\".node.N2M_RegisterStaticElementReq\x12\x46\n\x19registerDynamicElementReq\x18\x05 \x01(\x0b\x32#.node.N2M_RegisterDynamicElementReq\x12<\n\x14unregisterElementReq\x18\x06 \x01(\x0b\x32\x1e.node.N2M_UnregisterElementReq\x12\x32\n\x0fqueryElementReq\x18\x07 \x01(\x0b\x32\x19.node.N2M_QueryElementReq\"\xc2\x03\n\x0cM2N_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x30\n\x0enodeConnectRes\x18\x03 \x01(\x0b\x32\x18.node.M2N_NodeConnectRes\x12,\n\x0cgetNodeIdRes\x18\x04 \x01(\x0b\x32\x16.node.M2N_GetNodeIdRes\x12\x30\n\x0egetNodeListRes\x18\x05 \x01(\x0b\x32\x18.node.M2N_GetNodeListRes\x12\x44\n\x18registerStaticElementRes\x18\x06 \x01(\x0b\x32\".node.M2N_RegisterStaticElementRes\x12\x46\n\x19registerDynamicElementRes\x18\x07 \x01(\x0b\x32#.node.M2N_RegisterDynamicElementRes\x12<\n\x14unregisterElementRes\x18\x08 \x01(\x0b\x32\x1e.node.M2N_UnregisterElementRes\x12\x32\n\x0fqueryElementRes\x18\t \x01(\x0b\x32\x19.node.N2M_QueryElementRes\"S\n\x12N2M_NodeConnectReq\x12\x11\n\thasNodeId\x18\x01 \x01(\x08\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05\x12\x0c\n\x04host\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\x05\"\x14\n\x12M2N_NodeConnectRes\"\x12\n\x10N2M_GetNodeIdReq\"\"\n\x10M2N_GetNodeIdRes\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"\x14\n\x12N2M_GetNodeListReq\":\n\x0cM2N_NodeInfo\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04host\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"7\n\x12M2N_GetNodeListRes\x12!\n\x05nodes\x18\x01 \x03(\x0b\x32\x12.node.M2N_NodeInfo\"<\n\x1cN2M_RegisterStaticElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04guid\x18\x02 \x01(\x04\"\x1e\n\x1cM2N_RegisterStaticElementRes\"/\n\x1dN2M_RegisterDynamicElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"-\n\x1dM2N_RegisterDynamicElementRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"(\n\x18N2M_UnregisterElementReq\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"\x1a\n\x18M2N_UnregisterElementRes\"#\n\x13N2M_QueryElementReq\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"3\n\x13N2M_QueryElementRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05*\xcc\x03\n\x06MN_Msg\x12\x1a\n\x14N2M_Node_Connect_Req\x10\x81\x80\x04\x12\x1a\n\x14M2N_Node_Connect_Res\x10\x82\x80\x04\x12\x19\n\x13N2M_Get_Node_Id_Req\x10\x83\x80\x04\x12\x19\n\x13M2N_Get_Node_Id_Res\x10\x84\x80\x04\x12\x1b\n\x15N2M_Get_Node_List_Req\x10\x85\x80\x04\x12\x1b\n\x15M2N_Get_Node_List_Res\x10\x86\x80\x04\x12%\n\x1fN2M_Register_Static_Element_Req\x10\x87\x80\x04\x12%\n\x1fM2N_Register_Static_Element_Res\x10\x88\x80\x04\x12&\n N2M_Register_Dynamic_Element_Req\x10\x89\x80\x04\x12&\n M2N_Register_Dynamic_Element_Res\x10\x8a\x80\x04\x12 \n\x1aN2M_Unregister_Element_Req\x10\x8b\x80\x04\x12 \n\x1aM2N_Unregister_Element_Res\x10\x8c\x80\x04\x12\x1b\n\x15N2M_Query_Element_Req\x10\x8d\x80\x04\x12\x1b\n\x15M2N_Query_Element_Res\x10\x8e\x80\x04\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
 _MN_MSG = _descriptor.EnumDescriptor(
@@ -517,9 +517,9 @@ _N2M_REGISTERSTATICELEMENTREQ = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='uuid', full_name='node.N2M_RegisterStaticElementReq.uuid', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='guid', full_name='node.N2M_RegisterStaticElementReq.guid', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -603,9 +603,9 @@ _M2N_REGISTERDYNAMICELEMENTRES = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='uuid', full_name='node.M2N_RegisterDynamicElementRes.uuid', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='guid', full_name='node.M2N_RegisterDynamicElementRes.guid', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -634,9 +634,9 @@ _N2M_UNREGISTERELEMENTREQ = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='uuid', full_name='node.N2M_UnregisterElementReq.uuid', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='guid', full_name='node.N2M_UnregisterElementReq.guid', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -689,9 +689,9 @@ _N2M_QUERYELEMENTREQ = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='uuid', full_name='node.N2M_QueryElementReq.uuid', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='guid', full_name='node.N2M_QueryElementReq.guid', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -720,9 +720,9 @@ _N2M_QUERYELEMENTRES = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='uuid', full_name='node.N2M_QueryElementRes.uuid', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='guid', full_name='node.N2M_QueryElementRes.guid', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),

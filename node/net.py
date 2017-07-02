@@ -159,7 +159,6 @@ class Net:
     def update_as_select(self):
         rs, ws, es = select(self.read_list, self.write_list, self.read_list, self.timeout)
         if not (rs or ws or es):
-            print "timeout..."
             return
             
         # read

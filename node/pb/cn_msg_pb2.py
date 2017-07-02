@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='cn_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x0c\x63n_msg.proto\x12\x04node\"y\n\x0b\x43\x32N_Request\x12\x34\n\x10\x63lientConnectReq\x18\x01 \x01(\x0b\x32\x1a.node.C2N_ClientConnectReq\x12\x34\n\x10\x63lientDisconnReq\x18\x02 \x01(\x0b\x32\x1a.node.C2N_ClientDisconnReq\"\x9c\x01\n\x0cN2C_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x34\n\x10\x63lientConnectRes\x18\x03 \x01(\x0b\x32\x1a.node.N2C_ClientConnectRes\x12\x34\n\x10\x63lientDisconnRes\x18\x04 \x01(\x0b\x32\x1a.node.N2C_ClientDisconnRes\"\x16\n\x14\x43\x32N_ClientConnectReq\"$\n\x14N2C_ClientConnectRes\x12\x0c\n\x04uuid\x18\x01 \x01(\t\"\x16\n\x14\x43\x32N_ClientDisconnReq\"\x16\n\x14N2C_ClientDisconnRes*\x80\x01\n\x06\x43N_Msg\x12\x1c\n\x16\x43\x32N_Client_Connect_Req\x10\x81\x80\x0c\x12\x1c\n\x16N2C_Client_Connect_Res\x10\x82\x80\x0c\x12\x1c\n\x16\x43\x32N_Client_Disconn_Req\x10\x83\x80\x0c\x12\x1c\n\x16N2C_Client_Disconn_Res\x10\x84\x80\x0c\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x0c\x63n_msg.proto\x12\x04node\"y\n\x0b\x43\x32N_Request\x12\x34\n\x10\x63lientConnectReq\x18\x01 \x01(\x0b\x32\x1a.node.C2N_ClientConnectReq\x12\x34\n\x10\x63lientDisconnReq\x18\x02 \x01(\x0b\x32\x1a.node.C2N_ClientDisconnReq\"\x9c\x01\n\x0cN2C_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x34\n\x10\x63lientConnectRes\x18\x03 \x01(\x0b\x32\x1a.node.N2C_ClientConnectRes\x12\x34\n\x10\x63lientDisconnRes\x18\x04 \x01(\x0b\x32\x1a.node.N2C_ClientDisconnRes\"\x16\n\x14\x43\x32N_ClientConnectReq\"$\n\x14N2C_ClientConnectRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"\x16\n\x14\x43\x32N_ClientDisconnReq\"\x16\n\x14N2C_ClientDisconnRes*\x80\x01\n\x06\x43N_Msg\x12\x1c\n\x16\x43\x32N_Client_Connect_Req\x10\x81\x80\x0c\x12\x1c\n\x16N2C_Client_Connect_Res\x10\x82\x80\x0c\x12\x1c\n\x16\x43\x32N_Client_Disconn_Req\x10\x83\x80\x0c\x12\x1c\n\x16N2C_Client_Disconn_Res\x10\x84\x80\x0c\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
 _CN_MSG = _descriptor.EnumDescriptor(
@@ -183,9 +183,9 @@ _N2C_CLIENTCONNECTRES = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='uuid', full_name='node.N2C_ClientConnectRes.uuid', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='guid', full_name='node.N2C_ClientConnectRes.guid', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),

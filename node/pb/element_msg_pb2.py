@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='element_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x11\x65lement_msg.proto\x12\x04node\"\\\n\nElementMsg\x12\r\n\x05msgId\x18\x01 \x01(\x05\x12\x14\n\x0c\x66rom_element\x18\x02 \x01(\t\x12\x12\n\nto_element\x18\x03 \x01(\t\x12\x15\n\rserializeData\x18\x04 \x01(\t\"\x13\n\x04Helo\x12\x0b\n\x03txt\x18\x01 \x01(\t*\x15\n\x06\x45leMsg\x12\x0b\n\x07\x45M_HELO\x10\x01\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x11\x65lement_msg.proto\x12\x04node\"\\\n\nElementMsg\x12\r\n\x05msgId\x18\x01 \x01(\x05\x12\x14\n\x0c\x66rom_element\x18\x02 \x01(\x04\x12\x12\n\nto_element\x18\x03 \x01(\x04\x12\x15\n\rserializeData\x18\x04 \x01(\t\"\x13\n\x04Helo\x12\x0b\n\x03txt\x18\x01 \x01(\t*\x15\n\x06\x45leMsg\x12\x0b\n\x07\x45M_HELO\x10\x01\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
 _ELEMSG = _descriptor.EnumDescriptor(
@@ -62,15 +62,15 @@ _ELEMENTMSG = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='from_element', full_name='node.ElementMsg.from_element', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
       name='to_element', full_name='node.ElementMsg.to_element', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),

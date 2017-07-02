@@ -88,7 +88,7 @@ message M2N_GetNodeListRes{
 // 注册静态元素，指定固定且广泛周知的uuid
 message N2M_RegisterStaticElementReq{
   optional int32        nodeId      = 1;
-  optional string       uuid        = 2;
+  optional uint64       guid        = 2;
 }
 
 message M2N_RegisterStaticElementRes{
@@ -101,13 +101,13 @@ message N2M_RegisterDynamicElementReq{
 }
 
 message M2N_RegisterDynamicElementRes{
-  optional string       uuid        = 1;
+  optional uint64       guid        = 1;
 }
 
 
 // 取消注册元素
 message N2M_UnregisterElementReq{
-  optional string       uuid        = 1;
+  optional uint64       guid        = 1;
 }
 
 message M2N_UnregisterElementRes{
@@ -116,10 +116,10 @@ message M2N_UnregisterElementRes{
 
 // 查询元素，返回nodeid
 message N2M_QueryElementReq{
-  optional string       uuid        = 1;
+  optional uint64       guid        = 1;
 }
 
 message N2M_QueryElementRes{
-  optional string       uuid        = 1;
+  optional uint64       guid        = 1;
   optional int32        nodeId      = 2;
 }

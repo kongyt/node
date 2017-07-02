@@ -29,7 +29,7 @@ message C2N_ClientConnectReq{
 }
 
 message N2C_ClientConnectRes{
-  optional string       uuid    = 1;
+  optional uint64       guid    = 1;
 }
 
 message C2N_ClientDisconnReq{

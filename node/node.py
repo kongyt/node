@@ -10,11 +10,6 @@ from pb.cn_msg_pb2 import *
 from pb.element_msg_pb2 import *
 from element import *
 
-
-class TestElement(Element):
-    def on_message(self, msg):
-        print 'test element recv msg:' + msg.serializeData   
-
 class ElementSession(Element):
         
     def set_session(self, session):
@@ -77,7 +72,6 @@ class NodeServer(MsgHandle, Interface):
         self.element_gateway = {}
         self.element_msg = []
         self.element_wait_register = []
-        self.local_element = TestElement(self)
         self.element_map_by_session = {}
  
 
@@ -88,11 +82,23 @@ class NodeServer(MsgHandle, Interface):
             print 'unkown msg id.'
         
     def on_session_close(self, session):
+        if session in self.element_map_by_session.keys():            
+            element = self.element_map_by_session[session]
+            del self.element_map_by_session[session]
+            
+            if element in self.element_wait_register:
+                self.element_wait_register.remove(element)
+            elif element.guid in self.element_map.keys():
+                if element.guid in self.element_gateway.keys():
+                    del self.element_gateway[element.guid]
+                del self.element_map[element.guid]
+                self.unregister_element(element.guid)
+    
         if session in self.node_entity_map_by_session.keys():
             node = self.node_entity_map_by_session[session]
             if node.node_id in self.node_entity_map_by_id.keys():
                 del self.node_entity_map_by_id[node.node_id]
-            del self.node_entity_map_by_session[session]
+            del self.node_entity_map_by_session[session]  
             
         
     def init(self, config):
@@ -114,8 +120,13 @@ class NodeServer(MsgHandle, Interface):
             self.net.update()
             for msg in self.element_msg:
                 self.gate_element_msg_to_other_node(msg)            
-                
-            print 'node: '+str(len(self.node_entity_map_by_id)+1)     
+            
+            print ''
+            print '----------------------Node-------------------------'
+            print 'node num: '+str(len(self.node_entity_map_by_id)+1) 
+            print 'node id', self.local_node.node_id
+            print 'gateway', self.element_gateway
+            print ''
     
         
     def connect_to_master(self, host, port):
@@ -130,13 +141,6 @@ class NodeServer(MsgHandle, Interface):
         req = N2M_Request()
         self.master_session.send(N2M_Get_Node_Id_Req, req.SerializeToString())
         
-    def register_test_element(self):
-        self.element_wait_register.append(self.local_element)
-        req = N2M_Request()
-        req.registerDynamicElementReq.nodeId = self.local_node.node_id
-        print req
-        self.master_session.send(N2M_Register_Dynamic_Element_Req, req.SerializeToString())
-        
     def get_node_list(self):
         req = N2M_Request()
         self.master_session.send(N2M_Get_Node_List_Req, req.SerializeToString())
@@ -145,6 +149,8 @@ class NodeServer(MsgHandle, Interface):
         print 'onNodeConnectResFromMaster'
         res = M2N_Response()
         res.ParseFromString(session.msg_data)
+        print res
+        
         if res.result == True:
             self.get_node_id()
         else:
@@ -154,10 +160,10 @@ class NodeServer(MsgHandle, Interface):
         print 'onGetNodeIdResFromMaster'
         res = M2N_Response()
         res.ParseFromString(session.msg_data)
+        print res
         if res.result == True:
             self.local_node.node_id = res.getNodeIdRes.nodeId
             self.local_node.is_working = True
-            self.register_test_element()
             self.get_node_list()
         else:
             print 'get node id failed.'        
@@ -167,6 +173,7 @@ class NodeServer(MsgHandle, Interface):
         print 'onGetNodeListResFromMaster'
         res = M2N_Response()
         res.ParseFromString(session.msg_data)
+        print res
         if res.result == True:
             for node_info in res.getNodeListRes.nodes:
                 node = Node()
@@ -185,26 +192,24 @@ class NodeServer(MsgHandle, Interface):
         print 'onRegisterDynamicElementResFromMaster'
         res = M2N_Response()
         res.ParseFromString(session.msg_data)
+        print res
         if res.result == True:
             element = self.element_wait_register.pop()
-            element.uuid = res.registerDynamicElementRes.uuid
-            print element.uuid
-            self.element_map[element.uuid] = element
-            self.element_gateway[element.uuid] = self.local_node.node_id
-            print self.element_gateway
-            if element is not self.local_element:
-                res = N2C_Response()
-                res.result = True
-                res.clientConnectRes.uuid = element.uuid
-                element.session.send(N2C_Client_Connect_Res, res.SerializeToString())
+            element.guid = res.registerDynamicElementRes.guid
+            self.element_map[element.guid] = element
+            self.element_gateway[element.guid] = self.local_node.node_id
+            res = N2C_Response()
+            res.result = True
+            res.clientConnectRes.guid = element.guid
+            element.session.send(N2C_Client_Connect_Res, res.SerializeToString())
+                
         else:
             print 'register dynamic element failed.'
             
 
-    def unregister_element(self, uuid):
+    def unregister_element(self, guid):
         req = N2M_Request()
-        req.unregisterElementReq.nodeId = self.local_node.node_id
-        req.unregisterElementReq.uuid = uuid
+        req.unregisterElementReq.guid = guid
         self.master_session.send(N2M_Unregister_Element_Req, req.SerializeToString())
                 
     
@@ -216,8 +221,9 @@ class NodeServer(MsgHandle, Interface):
         print 'onQueryElementResFromMaster'
         res = M2N_Response()
         res.ParseFromString(session.msg_data)
+        print res
         if res.result == True:
-            self.element_gateway[res.queryElementRes.uuid] = res.queryElementRes.nodeId
+            self.element_gateway[res.queryElementRes.guid] = res.queryElementRes.nodeId
             print self.element_gateway
         else:
             print 'query element failed.'
@@ -227,6 +233,7 @@ class NodeServer(MsgHandle, Interface):
         print 'onNodeConnectReqFromNode'
         req = N2N_Request()
         req.ParseFromString(session.msg_data)
+        print req
         node = Node()
         node.remote = True
         node.session = session
@@ -246,6 +253,7 @@ class NodeServer(MsgHandle, Interface):
         print 'onNodeConnectResFromNode'
         res = N2N_Response()
         res.ParseFromString(session.msg_data)
+        print res
         if res.result == True:
             node = self.node_entity_map_by_session[session]
             self.node_entity_map_by_id[node.node_id] = node
@@ -266,8 +274,8 @@ class NodeServer(MsgHandle, Interface):
         print 'onClientDisconnReq'
         if self.element_map_by_session.has_key(session):
             element = self.element_map_by_session[session]
-            self.unregister_element(element.uuid)
-            del self.element_map[element.uuid]
+            self.unregister_element(element.guid)
+            del self.element_map[element.guid]
             del self.element_map_by_session[session]
     
     
@@ -284,7 +292,7 @@ class NodeServer(MsgHandle, Interface):
             self.element_msg.append(msg)
             
             req = N2M_Request()     
-            req.queryElementReq.uuid = msg.to_element
+            req.queryElementReq.guid = msg.to_element
             self.master_session.send(N2M_Query_Element_Req, req.SerializeToString())
     
     def gate_element_msg_to_other_node(self, msg):
@@ -308,6 +316,7 @@ class NodeServer(MsgHandle, Interface):
         print 'onElementMsg'
         msg = ElementMsg()
         msg.ParseFromString(session.msg_data)
+        print msg
         self.dispatch_element_msg(msg)    
        
         

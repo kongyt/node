@@ -1,5 +1,6 @@
 #coding: utf-8
 
+import os
 from socket import *
 from pb.cn_msg_pb2 import *
 from pb.element_msg_pb2 import *
@@ -51,7 +52,7 @@ class Client:
         
     def init_net(self, host, port):
         self.sock.connect((host, port))
-        print 'connect success'
+        print 'connect success.'
         start_new(recv_msg, (self,)) # 开一个线程用来接收数据
         self.send_conn()
         
@@ -106,20 +107,20 @@ class Client:
                 if cmds[0] == 'connect' and len(cmds) == 3:
                     self.init_net(cmds[1], int(cmds[2]))
                 elif cmds[0] == 'helo' and len(cmds) == 3:
-                    self.send_helo(cmds[1], cmds[2])
+                    self.send_helo(int(cmds[1]), cmds[2])
                 else:
                     print "Unknown command."
 
                     
-    def send_helo(self, to_uuid, txt):
+    def send_helo(self, to_guid, txt):
         helo = Helo()
         helo.txt = txt
         data = helo.SerializeToString()
     
         msg = ElementMsg()
         msg.msgId = EM_HELO
-        msg.from_element = self.uuid
-        msg.to_element = to_uuid
+        msg.from_element = self.guid
+        msg.to_element = to_guid
         msg.serializeData = data
         self.send_msg(0x00000000, msg)
         self.is_waitting = False
@@ -127,7 +128,7 @@ class Client:
     def help(self):
         print 'help'
         print 'connect <ip>   <port>'
-        print 'helo    <uuid_to> <txt>'
+        print 'helo    <guid_to> <txt>'
         print 'quit'        
     
     def quit(self):
@@ -150,9 +151,8 @@ class Client:
         res = N2C_Response()
         res.ParseFromString(self.msg_data)
         if res.result == True:
-            self.uuid = res.clientConnectRes.uuid
-            print 'connect success.'
-            print 'UUID:'+self.uuid
+            self.guid = res.clientConnectRes.guid
+            print 'GUID:'+str(self.guid)
         else:
             print 'connect failed.'
     
@@ -175,6 +175,9 @@ class Client:
             
             
 if __name__ == "__main__":
+    print os.sys.argv
+    port = os.sys.argv[1]
     client = Client()
+    client.init_net('127.0.0.1', int(port))
     client.run()
     print 'client quit.'
