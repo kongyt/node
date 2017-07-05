@@ -1,2 +1,2 @@
-for /L %%i in (1,1,2) do start python client.py 8001 
-for /L %%i in (1,1,2) do start python client.py 8002 
+for /L %%i in (1,1,1) do start python client.py 8001 %%i
+for /L %%i in (1,1,1) do start python client.py 8002 

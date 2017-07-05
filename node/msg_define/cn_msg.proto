@@ -4,38 +4,45 @@ option java_package="com.kongyt.node.messages";
 
 
 enum CN_Msg{
-  C2N_Client_Connect_Req    = 0x00030001;
-  N2C_Client_Connect_Res    = 0x00030002;
-  
-  C2N_Client_Disconn_Req    = 0x00030003;
-  N2C_Client_Disconn_Res    = 0x00030004;
+    C2N_Client_Connect_Req      = 0x00030001;
+    N2C_Client_Connect_Res      = 0x00030002;
+
+    C2N_Client_Disconn_Req      = 0x00030003;
+    N2C_Client_Disconn_Res      = 0x00030004;
 }
 
 
 message C2N_Request{
-  optional C2N_ClientConnectReq   clientConnectReq    = 1;
-  optional C2N_ClientDisconnReq   clientDisconnReq    = 2;
+    optional C2N_ClientConnectReq   clientConnectReq    = 1;
+    optional C2N_ClientDisconnReq   clientDisconnReq    = 2;
 }
+
 
 message N2C_Response{
-  optional bool                     result          = 1;
-  optional string                   errorStr        = 2;
-  optional N2C_ClientConnectRes     clientConnectRes = 3;
-  optional N2C_ClientDisconnRes     clientDisconnRes = 4;
+    optional bool                   result              = 1;
+    optional int32                  errorCode           = 2;
+    optional string                 errorStr            = 3;
+    optional N2C_ClientConnectRes   clientConnectRes    = 4;
+    optional N2C_ClientDisconnRes   clientDisconnRes    = 5;
 }
+
 
 message C2N_ClientConnectReq{
-  // empty
+    optional bool                   isService           = 1;
+    optional uint64                 guid                = 2;
 }
+
 
 message N2C_ClientConnectRes{
-  optional uint64       guid    = 1;
+    optional uint64                 guid                = 1;
 }
+
 
 message C2N_ClientDisconnReq{
-  // empty
+    // empty
 }
 
+
 message N2C_ClientDisconnRes{
-  // empty
+    // empty
 }

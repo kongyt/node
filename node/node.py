@@ -1,7 +1,13 @@
-#coding: utf-8       
-   
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Date    : 2017-07-04 13:36:05
+# @Author  : kongyt (839339849@qq.com)
+# @Link    : https://www.kongyt.com
+# @Version : 1
+
 import os
-import time   
+import sys
+import time
 
 from net import *
 from pb.mn_msg_pb2 import *
@@ -10,316 +16,347 @@ from pb.cn_msg_pb2 import *
 from pb.element_msg_pb2 import *
 from element import *
 
+
 class ElementSession(Element):
-        
-    def set_session(self, session):
+    def __init__(self, session, interface):
+        Element.__init__(self, interface)
+        self.guid = 0
         self.session = session
-    
+
     def on_message(self, msg):
-        self.session.send(0x00000000, msg.SerializeToString())
-        
+        self.session.send(Element_Msg_Id, msg.SerializeToString())
+
 class Node:
     def __init__(self):
         self.node_id = 0
-        self.host = ""
+        self.host = ''
         self.port = 0
-        self.remote = False
-        self.session = None
-        self.is_working = False
-        
-    def connect(self, local_node_id, local_node_host, local_node_port):
-        req = N2N_Request()
-        req.nodeConnectReq.nodeId = local_node_id
-        req.nodeConnectReq.host = local_node_host
-        req.nodeConnectReq.port = local_node_port
-        self.session.send(N2N_Node_Connect_Req, req.SerializeToString())
-        
-        
-    def on_connect(self):
-        self.is_working = True 
-    
-        
-        
 
-class NodeServer(MsgHandle, Interface):
-    def __init__(self):
+
+class RemoteNode(Node):
+    def __init__(self, session):
+        Node.__init__(self)
+        self.session = session
+        self.guid_list = []
+
+    def relay_element_msg(self, msg):
+        self.session.send(Element_Msg_Id, msg.SerializeToString())
+
+
+class LocalNode(Node, MsgHandle, Interface):
+    def __init__(self, config):
+        Node.__init__(self)
         # 消息绑定
         self.msg_funcs = {
-            M2N_Node_Connect_Res    : NodeServer.onNodeConnectResFromMaster,
-            M2N_Get_Node_Id_Res     : NodeServer.onGetNodeIdResFromMaster,
-            M2N_Get_Node_List_Res   : NodeServer.onGetNodeListResFromMaster,
-            M2N_Register_Static_Element_Res:    NodeServer.onRegisterStaticElementResFromMaster,
-            M2N_Register_Dynamic_Element_Res:   NodeServer.onRegisterDynamicElementResFromMaster,
-            M2N_Unregister_Element_Res:         NodeServer.onUnregisterElementResFromMaster,
-            M2N_Query_Element_Res:              NodeServer.onQueryElementResFromMaster,
-            
-            N2N_Node_Connect_Req    : NodeServer.onNodeConnectReqFromNode,
-            N2N_Node_Connect_Res    : NodeServer.onNodeConnectResFromNode,
-            
-            
-            C2N_Client_Connect_Req  : NodeServer.onClientConnectReq,
-            C2N_Client_Disconn_Req  : NodeServer.onClientDisconnReq,
-            
-            0x00000000              : NodeServer.onElementMsg,      # 0x00000000为元素消息ID
+            M2N_Node_Connect_Res        :    LocalNode.on_node_connect_res_from_master,
+            M2N_Node_Disconn_Res        :    LocalNode.on_node_disconn_res_from_master,
+            M2N_Get_Node_List_Res       :    LocalNode.on_get_node_list_res_from_master,
+            M2N_Register_Element_Res    :    LocalNode.on_register_element_res_from_master,
+            M2N_Unregister_Element_Res  :    LocalNode.on_unregister_element_res_from_master,
+            M2N_Query_Element_Res       :    LocalNode.on_query_element_res_from_master,
+
+            N2N_Node_Connect_Req        :    LocalNode.on_node_connect_req_from_node,
+            N2N_Node_Connect_Res        :    LocalNode.on_node_connect_res_from_node,
+
+            C2N_Client_Connect_Req      :    LocalNode.on_client_connect_req_from_client,
+            C2N_Client_Disconn_Req      :    LocalNode.on_client_disconn_req_from_client,
+
+            Element_Msg_Id              :    LocalNode.on_receive_element_msg,
         }
-        # 所有node id 到Node 的映射
-        self.node_entity_map_by_session = {}
-        self.node_entity_map_by_id = {}   
-        self.local_node = None        
+
+        self.remote_node_map = {}    # session -> node
+        self.element_map = {}        # session -> element
+        self.node_id_map = {}        # node_id -> node
+        self.guid_to_node = {}       # guid      -> node
+        self.guid_to_element = {}    # guid      -> element
+        self.node_id = 0
+        self.host = config['host']
+        self.port = config['port']
+        self.timeout =config['timeout']
+        self.master_host = config['master_host']
+        self.master_port = config['master_port']
         self.master_session = None
-        self.is_init_ok = False
-        self.element_map = {}
-        self.element_gateway = {}
-        self.element_msg = []
-        self.element_wait_register = []
-        self.element_map_by_session = {}
- 
+
+        self.wait_proc_msg = {}        # guid    -> msg
+
+
+        self.service_element_wait_register = {}
+        self.dynamic_element_wait_register = []
+
+    def init_local_node(self):
+        self.net = Net()
+        self.net.register_msg_handle(self)
+        self.net.init(SELECT, self.host, self.port, self.timeout)
+        self.master_session = self.net.connect_to(self.master_host, self.master_port)    # 连接Master
+        self.send_node_connect_req_to_master(self.host, self.port)        # 发送连接请求
+
+        while True:
+            self.net.update()
+            for guid in self.wait_proc_msg.keys():
+                if guid in self.guid_to_node.keys():
+                    node = self.guid_to_node[guid]
+                    for msg in self.wait_proc_msg[guid]:
+                        node.relay_element_msg(msg)
+                    self.wait_proc_msg[guid] = []
+                    del self.wait_proc_msg[guid]
+                    
+            self.print_node_info()
+
+
+    def print_node_info(self):
+        print ''
+        print '-------------------------Node---------------------------'
+        print 'node id:', self.node_id
+        print 'node:', len(self.remote_node_map)+1
+        print 'element:', len(self.element_map)
+        print self.node_id_map
+        print ''
+
 
     def on_receive_msg(self, session):
         if session.msg_id in self.msg_funcs.keys():
             self.msg_funcs[session.msg_id](self, session)
         else:
             print 'unkown msg id.'
-        
+
     def on_session_close(self, session):
-        if session in self.element_map_by_session.keys():            
-            element = self.element_map_by_session[session]
-            del self.element_map_by_session[session]
-            
-            if element in self.element_wait_register:
-                self.element_wait_register.remove(element)
-            elif element.guid in self.element_map.keys():
-                if element.guid in self.element_gateway.keys():
-                    del self.element_gateway[element.guid]
-                del self.element_map[element.guid]
-                self.unregister_element(element.guid)
-    
-        if session in self.node_entity_map_by_session.keys():
-            node = self.node_entity_map_by_session[session]
-            if node.node_id in self.node_entity_map_by_id.keys():
-                del self.node_entity_map_by_id[node.node_id]
-            del self.node_entity_map_by_session[session]  
-            
-        
-    def init(self, config):
-        self.net = Net()
-        self.net.register_msg_handle(self)
-        self.net.init(SELECT, config['host'], config['port'], config['timeout'])
-        self.local_node = Node()
-        self.local_node.remote = False
-        self.local_node.host = config['host']
-        self.local_node.port = config['port']
-        
-        self.connect_to_master(config['master_host'], config['master_port'])
-        
-        self.run()
-        
-        
-    def run(self):
-        while True:
-            self.net.update()
-            for msg in self.element_msg:
-                self.gate_element_msg_to_other_node(msg)            
-            
-            print ''
-            print '----------------------Node-------------------------'
-            print 'node num: '+str(len(self.node_entity_map_by_id)+1) 
-            print 'node id', self.local_node.node_id
-            print 'gateway', self.element_gateway
-            print ''
-    
-        
-    def connect_to_master(self, host, port):
-        self.master_session = self.net.connect_to(host, port)
+        if session in self.remote_node_map.keys():
+            remote_node = self.remote_node_map[session]
+            for guid in remote_node.guid_list:
+                if guid in self.guid_to_node.keys():
+                    del self.guid_to_node[guid]
+                if guid in self.wait_proc_msg.keys():
+                    del self.wait_proc_msg[guid]
+            if remote_node.node_id in self.node_id_map.keys():
+                del self.node_id_map[remote_node.node_id]
+
+        elif session in self.element_map.keys():
+            element = self.element_map[session]            
+            if element.guid in self.guid_to_element.keys():
+                self.send_unregister_element_req_to_master(element.guid)
+                del self.guid_to_element[element.guid]
+            del self.element_map[session]
+        else:
+            print 'empty session close.'
+
+
+
+    def on_receive_element_msg(self, session):
+        msg = ElementMsg()
+        msg.ParseFromString(session.msg_data)
+        if msg.eleTo in self.guid_to_element.keys():            # 如果是自己管理的，则直接发送过去
+            self.guid_to_element[msg.eleTo].on_message(msg)    
+        elif msg.eleTo in self.guid_to_node.keys():            # 如果是其他节点管理的，并且知道路由信息，则转发
+            self.guid_to_node[msg.eleTo].relay_element_msg(msg)
+        else:    # 路径未知，加入待处理消息容器
+            if msg.eleTo in self.wait_proc_msg.keys():
+                self.wait_proc_msg[msg.eleTo].append(msg)
+            else:
+                self.wait_proc_msg[msg.eleTo] = []
+                self.wait_proc_msg[msg.eleTo].append(msg)
+            # 发送元素路由查询请求
+            self.send_query_element_req(msg.eleTo)
+
+
+    # 发送连接Master请求
+    def send_node_connect_req_to_master(self, host, port):
         req = N2M_Request()
-        req.nodeConnectReq.hasNodeId = False
-        req.nodeConnectReq.host = self.local_node.host
-        req.nodeConnectReq.port = self.local_node.port
+        req.nodeConnectReq.host = host
+        req.nodeConnectReq.port = port
         self.master_session.send(N2M_Node_Connect_Req, req.SerializeToString())
-    
-    def get_node_id(self):
+
+    def on_node_connect_res_from_master(self, session):
+        if session is self.master_session:
+            res = M2N_Response()
+            res.ParseFromString(session.msg_data)
+            if res.result == True:
+                self.node_id = res.nodeConnectRes.nodeId
+                self.send_get_node_list_req()
+            else:
+                print 'Get node id error.'
+                sys.exit(0)
+        else:
+            print 'session error.'
+            session.force_close()
+
+    # 发送断开Master连接请求
+    def send_node_disconn_req_to_master(self):
         req = N2M_Request()
-        self.master_session.send(N2M_Get_Node_Id_Req, req.SerializeToString())
-        
-    def get_node_list(self):
+        self.master_session.send(N2M_Node_Disconn_Req, req.SerializeToString())
+
+    def on_node_disconn_res_from_master(self, session):
+        print 'disconn master.'
+        session.force_close()
+
+    def send_get_node_list_req(self):
         req = N2M_Request()
         self.master_session.send(N2M_Get_Node_List_Req, req.SerializeToString())
-        
-    def onNodeConnectResFromMaster(self, session):
-        print 'onNodeConnectResFromMaster'
-        res = M2N_Response()
-        res.ParseFromString(session.msg_data)
-        print res
-        
-        if res.result == True:
-            self.get_node_id()
-        else:
-            print 'node connect master failed.'
-        
-    def onGetNodeIdResFromMaster(self, session):
-        print 'onGetNodeIdResFromMaster'
-        res = M2N_Response()
-        res.ParseFromString(session.msg_data)
-        print res
-        if res.result == True:
-            self.local_node.node_id = res.getNodeIdRes.nodeId
-            self.local_node.is_working = True
-            self.get_node_list()
-        else:
-            print 'get node id failed.'        
-        
-        
-    def onGetNodeListResFromMaster(self, session):
-        print 'onGetNodeListResFromMaster'
-        res = M2N_Response()
-        res.ParseFromString(session.msg_data)
-        print res
-        if res.result == True:
-            for node_info in res.getNodeListRes.nodes:
-                node = Node()
-                node.remote = True
-                node.node_id = node_info.nodeId
+
+    def on_get_node_list_res_from_master(self, session):
+        if session is self.master_session:
+            res = M2N_Response()
+            res.ParseFromString(session.msg_data)
+            print res
+            for node_info in res.getNodeListRes.nodeInfos:
+                node_session = self.net.connect_to(node_info.host, node_info.port)
+                node = RemoteNode(node_session)
                 node.host = node_info.host
                 node.port = node_info.port
-                node.session = self.net.connect_to(node.host, node.port)
-                self.node_entity_map_by_session[node.session] = node
-                node.connect(self.local_node.node_id, self.local_node.host, self.local_node.port) 
-    
-    def onRegisterStaticElementResFromMaster(self, session):
-        print 'onRegisterStaticElementResFromMaster'
-        
-    def onRegisterDynamicElementResFromMaster(self, session):
-        print 'onRegisterDynamicElementResFromMaster'
-        res = M2N_Response()
-        res.ParseFromString(session.msg_data)
-        print res
-        if res.result == True:
-            element = self.element_wait_register.pop()
-            element.guid = res.registerDynamicElementRes.guid
-            self.element_map[element.guid] = element
-            self.element_gateway[element.guid] = self.local_node.node_id
-            res = N2C_Response()
-            res.result = True
-            res.clientConnectRes.guid = element.guid
-            element.session.send(N2C_Client_Connect_Res, res.SerializeToString())
-                
+                node.node_id = node_info.nodeId
+                self.remote_node_map[node_session] = node
+                self.node_id_map[node.node_id] = node
+                self.send_node_connect_req_to_node(node_session, self.node_id, self.host, self.port)
         else:
-            print 'register dynamic element failed.'
-            
+            session.force_close()
 
-    def unregister_element(self, guid):
+
+    # 发送节点连接请求
+    def send_node_connect_req_to_node(self, session, local_node_id, local_host, local_port):
+        req = N2N_Request()
+        req.nodeConnectReq.nodeId = local_node_id
+        req.nodeConnectReq.host = local_host
+        req.nodeConnectReq.port = local_port
+        print req
+        session.send(N2N_Node_Connect_Req, req.SerializeToString())
+
+    # 响应节点连接请求
+    def on_node_connect_req_from_node(self, session):
+        res = N2N_Response()
+        if session not in self.remote_node_map.keys():
+            req = N2N_Request()
+            req.ParseFromString(session.msg_data)
+            node = RemoteNode(session)
+            node.host = req.nodeConnectReq.host
+            node.port = req.nodeConnectReq.port
+            node.node_id = req.nodeConnectReq.nodeId
+            self.remote_node_map[session] = node
+            self.node_id_map[node.node_id] = node
+
+            res.result = True
+        else:
+            res.result = False
+            res.errorStr = 'Node already connected.'
+        print res
+        session.send(N2N_Node_Connect_Res, res.SerializeToString())
+
+    # 响应节点连接回复
+    def on_node_connect_res_from_node(self, session):
+        print 'node connect success'
+
+
+    def send_register_element_req_to_master(self, element, isStatic, guid):
+        req = N2M_Request()
+        req.registerElementReq.nodeId = self.node_id
+        if isStatic == True:
+            req.registerElementReq.isStatic = True
+            req.registerElementReq.guid = guid
+        else:
+            req.registerElementReq.isStatic = False
+        print req
+        self.master_session.send(N2M_Register_Element_Req, req.SerializeToString())
+
+    def on_register_element_res_from_master(self, session):
+        if session is self.master_session:
+            res = M2N_Response()
+            res.ParseFromString(session.msg_data)
+            print res
+            guid = res.registerElementRes.guid 
+            if res.registerElementRes.isStatic == True:                
+                if guid not in self.guid_to_element.keys():
+                    if guid in self.service_element_wait_register.keys():
+                        element = self.service_element_wait_register[guid]
+                        del self.service_element_wait_register[guid]
+                        self.guid_to_element[guid] = element
+                        res = N2C_Response()
+                        res.result = True
+                        res.clientConnectRes.guid = guid
+                        element.session.send(N2C_Client_Connect_Res, res.SerializeToString())
+                    else:
+                        print 'no service element wait register.'
+                else:
+                    print 'guid already exist in element map.'
+            else:
+                if len(self.dynamic_element_wait_register) > 0:
+                    element = self.dynamic_element_wait_register.pop()
+                    element.guid = guid
+                    if guid not in self.guid_to_element.keys():
+                        self.guid_to_element[guid] = element
+                        res = N2C_Response()
+                        res.result = True
+                        res.clientConnectRes.guid = guid
+                        element.session.send(N2C_Client_Connect_Res, res.SerializeToString())
+                    else:
+                        print 'dynamic guid already exist in element map.'
+                else:
+                    print 'no dynamic element wait register.'
+        else:
+            session.force_close()
+
+    # 发送取消注册元素请求
+    def send_unregister_element_req_to_master(self, guid):
         req = N2M_Request()
         req.unregisterElementReq.guid = guid
         self.master_session.send(N2M_Unregister_Element_Req, req.SerializeToString())
-                
-    
-        
-    def onUnregisterElementResFromMaster(self, session):
-        print 'onUnregisterElementResFromMaster'        
-        
-    def onQueryElementResFromMaster(self, session):
-        print 'onQueryElementResFromMaster'
-        res = M2N_Response()
-        res.ParseFromString(session.msg_data)
-        print res
-        if res.result == True:
-            self.element_gateway[res.queryElementRes.guid] = res.queryElementRes.nodeId
-            print self.element_gateway
-        else:
-            print 'query element failed.'
-    
-        
-    def onNodeConnectReqFromNode(self, session):
-        print 'onNodeConnectReqFromNode'
-        req = N2N_Request()
-        req.ParseFromString(session.msg_data)
-        print req
-        node = Node()
-        node.remote = True
-        node.session = session
-        node.host = req.nodeConnectReq.host
-        node.port = req.nodeConnectReq.port
-        node.node_id = req.nodeConnectReq.nodeId
-        self.node_entity_map_by_session[session] = node
-        self.node_entity_map_by_id[node.node_id] = node
-        node.on_connect()
-        res = N2N_Response()
-        res.result = True
-        session.send(N2N_Node_Connect_Res, res.SerializeToString())
-        
-        
-        
-    def onNodeConnectResFromNode(self, session):
-        print 'onNodeConnectResFromNode'
-        res = N2N_Response()
-        res.ParseFromString(session.msg_data)
-        print res
-        if res.result == True:
-            node = self.node_entity_map_by_session[session]
-            self.node_entity_map_by_id[node.node_id] = node
-            node.on_connect()    
-            
-    def onClientConnectReq(self, session):
-        print 'onClientConnectReq'
-        if not self.element_map_by_session.has_key(session):
-            element = ElementSession(self)
-            element.set_session(session)
-            self.element_wait_register.append(element)        
-            self.element_map_by_session[session] = element
-            req = N2M_Request()
-            req.registerDynamicElementReq.nodeId = self.local_node.node_id
-            self.master_session.send(N2M_Register_Dynamic_Element_Req, req.SerializeToString())
 
-    def onClientDisconnReq(self, session):
-        print 'onClientDisconnReq'
-        if self.element_map_by_session.has_key(session):
-            element = self.element_map_by_session[session]
-            self.unregister_element(element.guid)
-            del self.element_map[element.guid]
-            del self.element_map_by_session[session]
-    
-    
-    def send_element_msg(self, msg):
-        print 'node server send element msg'
-        if self.element_gateway.has_key(msg.to_element):
-            nodeid = self.element_gateway[msg.to_element]
-            if nodeid == self.local_node.node_id:
-                self.dispatch_element_msg(msg)
+    def on_unregister_element_res_from_master(self, session):
+        if session is self.master_session:
+            print 'unregister element success.'
+        else:
+            session.force_close()
+
+
+    # 发送查询请求
+    def send_query_element_req(self, guid):
+        req = N2M_Request()
+        req.queryElementReq.guid = guid
+        self.master_session.send(N2M_Query_Element_Req, req.SerializeToString())
+
+    # 响应查询请求
+    def on_query_element_res_from_master(self, session):
+        if session is self.master_session:
+            res = M2N_Response()
+            res.ParseFromString(session.msg_data)
+            print res
+            if res.result == True:
+                guid = res.queryElementRes.guid
+                node_id = res.queryElementRes.nodeId
+                if guid not in self.guid_to_node.keys():
+                    if node_id in self.node_id_map.keys():
+                        self.guid_to_node[guid] = self.node_id_map[node_id]
+                    else:
+                        print 'not connected to node.'
+                else:
+                    print 'already has guid gate info.'
+        else:
+            session.force_close()
+
+    def on_client_connect_req_from_client(self, session):        
+        if session not in self.element_map.keys():
+            element = ElementSession(session, self)
+            self.element_map[session] = element
+            req = C2N_Request()
+            req.ParseFromString(session.msg_data)
+            print req
+            guid = 0
+            isService = req.clientConnectReq.isService 
+            if isService is True:
+                guid = req.clientConnectReq.guid
+                element.guid = guid
+                self.service_element_wait_register[guid] = element
             else:
-                node = self.node_entity_map_by_id[nodeid]
-                node.session.send(0x00000000, msg.SerializeToString())
+                self.dynamic_element_wait_register.append(element)            
+
+            self.send_register_element_req_to_master(element, isService, guid)
         else:
-            self.element_msg.append(msg)
-            
-            req = N2M_Request()     
-            req.queryElementReq.guid = msg.to_element
-            self.master_session.send(N2M_Query_Element_Req, req.SerializeToString())
-    
-    def gate_element_msg_to_other_node(self, msg):
-        if self.element_gateway.has_key(msg.to_element):
-            nodeid = self.element_gateway[msg.to_element]
-            if self.node_entity_map_by_id.has_key(nodeid):
-                node = self.node_entity_map_by_id[nodeid]
-                node.session.send(0x00000000, msg.SerializeToString())
-                self.element_msg.remove(msg)
-                
-    
-    def dispatch_element_msg(self, msg):
-        if self.element_map.has_key(msg.to_element):
-            self.element_map[msg.to_element].on_message(msg)
-        else:
-            print 'no element'
-            self.send_element_msg(msg)
-           
-    
-    def onElementMsg(self, session):
-        print 'onElementMsg'
-        msg = ElementMsg()
-        msg.ParseFromString(session.msg_data)
-        print msg
-        self.dispatch_element_msg(msg)    
-       
-        
+            res = N2C_Response()
+            res.result = False
+            res.errorStr = 'already connected.'
+            session.send(N2N_Node_Connect_Res, res.SerializeToString())
+
+    def on_client_disconn_req_from_client(self, session):
+        session.force_close()
+        print 'client disconn.'
+
 
 if __name__ == "__main__":
     config = {}
@@ -332,6 +369,7 @@ if __name__ == "__main__":
     config['timeout'] = 10
     config['master_host'] = '127.0.0.1'
     config['master_port'] = 8000
-    node = NodeServer()
-    node.init(config)
-        
+    node = LocalNode(config)
+    node.init_local_node()
+
+

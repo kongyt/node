@@ -4,28 +4,31 @@ option java_package="com.kongyt.node.messages";
 
 
 enum NN_Msg{
-  N2N_Node_Connect_Req      = 0x00020001;
-  N2N_Node_Connect_Res      = 0x00020002;
+    N2N_Node_Connect_Req    = 0x00020001;
+    N2N_Node_Connect_Res    = 0x00020002;
 }
 
 
 message N2N_Request{
-  optional N2N_NodeConnectReq   nodeConnectReq  = 1;
+    optional N2N_NodeConnectReq     nodeConnectReq  = 1;
 }
 
+
 message N2N_Response{
-  optional bool                 result          = 1;
-  optional string               errorStr        = 2;
-  optional N2N_NodeConnectRes   nodeConnectRes  = 3;
+    optional bool                   result          = 1;
+    optional int32                  errorCode       = 2;
+    optional string                 errorStr        = 3;
+    optional N2N_NodeConnectRes     nodeConnectRes  = 4;
 }
 
 
 message N2N_NodeConnectReq{
-  optional int32            nodeId              = 1;
-  optional string           host                = 2;
-  optional int32            port                = 3;
+    optional int32                  nodeId          = 1;
+    optional string                 host            = 2;
+    optional int32                  port            = 3;
 }
 
+
 message N2N_NodeConnectRes{
-  // empty
+    // empty
 }

@@ -1,0 +1,93 @@
+syntax="proto2";
+package node;
+option java_package="com.kongyt.node.messages";
+
+enum Chat_Msg{
+
+    Connect_Chat_Srv_Req        =   0x00010001;
+    Connect_Chat_Srv_Res        =   0x00010002;
+
+    Disconn_Chat_Srv_Req        =   0x00010003;
+    Disconn_Chat_Srv_Res        =   0x00010004;
+
+    Join_Room_Req               =   0x00010005;
+    Join_Room_Res               =   0x00010006;
+
+    Say_To_Room_Req             =   0x00010007;
+    Say_To_Room_Res             =   0x00010008;
+
+    Leave_Room_Req              =   0x00010009;
+    Leave_Room_Res              =   0x0001000A;
+    
+    User_Say_Noti               =   0x0001000B;
+}
+
+message ChatReq{
+    optional ConnectChatSrvReq  connectChatSrvReq   = 1;
+    optional DisconnChatSrvReq  disconnChatSrvReq   = 2;
+    optional JoinRoomReq        joinRoomReq         = 3;
+    optional SayToRoomReq       sayToRoomReq        = 4;
+    optional LeaveRoomReq       leaveRoomReq        = 5;
+}
+
+message ChatRes{
+    optional bool               result              = 1;
+    optional int32              errorCode           = 2;
+    optional string             errorStr            = 3;
+    optional ConnectChatSrvRes  connectChatSrvRes   = 4;
+    optional DisconnChatSrvRes  disconnChatSrvRes   = 5;
+    optional JoinRoomRes        joinRoomRes         = 6;
+    optional SayToRoomRes       sayToRoomRes        = 7;
+    optional LeaveRoomRes       leaveRoomRes        = 8;
+}
+
+message ChatNoti{
+    optional UserSayNoti        userSayNoti         = 1;
+}
+
+
+message ConnectChatSrvReq{
+    // empty
+}
+
+message ConnectChatSrvRes{
+    // empty
+}
+
+message DisconnChatSrvReq{
+    // empty
+}
+
+message DisconnChatSrvRes{
+    // empty
+}
+
+message JoinRoomReq{
+    optional int32      roomId      = 1;
+}
+
+message JoinRoomRes{
+    optional int32      roomId      = 1;
+}
+
+message SayToRoomReq{
+    optional int32      roomId      = 1;
+    optional string     txt         = 2;
+}
+
+message SayToRoomRes{
+    // empty
+}
+
+message LeaveRoomReq{
+    optional int32      roomId      = 1;
+}
+
+message LeaveRoomRes{
+    // empty
+}
+
+message UserSayNoti{
+    optional uint64     user        = 1;
+    optional string     txt         = 2;
+}

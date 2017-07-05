@@ -1,235 +1,219 @@
-#coding: utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Date    : 2017-07-03 19:52:48
+# @Author  : kongyt (839339849@qq.com)
+# @Link    : https://www.kongyt.com
+# @Version : 1
 
+import os
 from net import *
 from pb.mn_msg_pb2 import *
 
+DISCONNECTED    = 0
+CONNECTED       = 1
+WORKING         = 2
 
-class NodeEntity:
-
+class NodeInfo:
     def __init__(self, session):
         self.session = session
-        self.addr = None
         self.node_id = 0
         self.host = ""
         self.port = 0
-
-    
-    def get_node_id(self):
-        return self.node_id
-        
-    def get_host(self):
-        return self.host
-        
-    def get_port(self):
-        return self.port
-        
+        self.stat = DISCONNECTED 
+        self.guid_list = []
 
 class Master(MsgHandle):
-
     def __init__(self):
-        # ÏûÏ¢°ó¶¨
+        # æ¶ˆæ¯ç»‘å®š
         self.msg_funcs = {
-            N2M_Node_Connect_Req                : Master.onNodeConnectReq,              # Node ½ÚµãÁ¬½Ó
-            N2M_Get_Node_Id_Req                 : Master.onGetNodeIdReq,                # »ñÈ¡Node Id
-            N2M_Get_Node_List_Req               : Master.onGetNodeListReq,              # »ñÈ¡Node ÁÐ±í
-            
-            N2M_Register_Static_Element_Req    : Master.onRegisterStaticElementReq,   # ×¢²á¾²Ì¬ÔªËØ£¬ÎªÎÈ¶¨·þÎñÖ¸¶¨Ò»¸ö¹Ì¶¨µÄÖÜÖªµÄUUID
-            N2M_Register_Dynamic_Element_Req   : Master.onRegisterDynamicElementReq,  # ×¢²á¶¯Ì¬ÔªËØ£¬Éú³ÉÒ»¸öUUID
-            N2M_Unregister_Element_Req         : Master.onUnregisterElementReq,       # È¡Ïû×¢²áÔªËØ£¬ÒÆ³ýUUID
-            N2M_Query_Element_Req              : Master.onQueryElementReq,            # ²éÑ¯ÔªËØ£¬²éÑ¯Ò»¸öUUIDËùÖ¸ÏòµÄNode
+            N2M_Node_Connect_Req            : Master.on_node_connect_req,
+            N2M_Node_Disconn_Req            : Master.on_node_disconn_req,
+            N2M_Get_Node_List_Req           : Master.on_get_node_list_req,
+            N2M_Register_Element_Req        : Master.on_register_element_req,
+            N2M_Unregister_Element_Req      : Master.on_unregister_element_req,
+            N2M_Query_Element_Req           : Master.on_query_element_req,
         }
-        
-        # ËùÓÐsessionµ½NodeEntityµÄÓ³Éä
-        self.node_entity_map_by_session = {}
-        # ËùÓÐnode id µ½NodeEntityµÄÓ³Éä
-        self.node_entity_map_by_id = {}
-        self.element_map = {}
-        self.max_node_id = 1
+
+        # æ‰€æœ‰sessionåˆ°
+        self.node_map = {}  # session -> node
+        self.guid_map = {}  # guid    -> node
+
+        self.max_node_id = 0
         self.max_guid = 100000
-        
-        
+
+    def print_master_info(self):
+        print ''
+        print '-------------------------Master---------------------------'
+        print 'node:', len(self.node_map)
+        print 'element:', len(self.guid_map)
+        print self.guid_map
+        print ''
+
     def init_master(self, config):
         self.net = Net()
         self.net.register_msg_handle(self)
         self.net.init(SELECT, config['host'], config['port'], config['timeout'])
         while True:
             self.net.update()
-            print ''
-            print '--------------------Master--------------------------'
-            print 'node : '+str(len(self.node_entity_map_by_id))
-            print 'elements:',self.element_map
-            print ''
-            
-        
+            self.print_master_info()
+
     def on_receive_msg(self, session):
         if session.msg_id in self.msg_funcs.keys():
             self.msg_funcs[session.msg_id](self, session)
         else:
-            print 'unkown msg id.'
-        
+            print 'unkown msg type.('+str(session.msg_id)+')'
+
     def on_session_close(self, session):
-        print "Session Close"
-        if session in self.node_entity_map_by_session.keys():
-            node = self.node_entity_map_by_session[session]
-            if node.node_id in self.node_entity_map_by_id.keys():
-                del self.node_entity_map_by_id[node.node_id]
-            del self.node_entity_map_by_session[session]
-        
-    def onNodeConnectReq(self, session):
-        print 'onNodeConnectReq'
-        node = NodeEntity(session)
-        self.node_entity_map_by_session[session] = node
-        req = N2M_Request()
-        req.ParseFromString(session.msg_data)
-        print req
-        
-        if req.nodeConnectReq.hasNodeId is True:
-            node.node_id = req.nodeConnectReq.nodeId
-            self.node_entity_map_by_id[node.node_id] = node
-            
-        node.host = req.nodeConnectReq.host
-        node.port = req.nodeConnectReq.port
-        
+        print 'Session close.'
+        if session in self.node_map.keys():
+            node = self.node_map[session]
+            del self.node_map[session]
+            if node.stat == WORKING:
+                node.stat = DISCONNECTED
+    
+            for guid in node.guid_list:
+                if guid in self.guid_map.keys():
+                    del self.guid_map[guid]
+
+    def on_node_connect_req(self, session):
+        print 'Node connect.'
         res = M2N_Response()
-        res.result = True
-        session.send(M2N_Node_Connect_Res, res.SerializeToString())
-         
-        
-    def onGetNodeIdReq(self, session):
-        print 'onGetNodeIdReq'
-        if session in self.node_entity_map_by_session.keys():
-            node = self.node_entity_map_by_session[session]
-            res = M2N_Response()
-            if node.node_id in self.node_entity_map_by_id.keys():
-                res.result = False
-                res.errorStr = 'Already get node id.'
-                res.getNodeIdRes.nodeId = node.node_id
-            else:
-                node.node_id = self.max_node_id
-                self.node_entity_map_by_id[node.node_id] = node
-                self.max_node_id += 1
-                res.result = True
-                res.getNodeIdRes.nodeId = node.node_id
-            session.send(M2N_Get_Node_Id_Res, res.SerializeToString())   
-        else:
-            session.force_close() # Òì³£×´Ì¬£¬ÐèÒªÏÈ·¢ËÍNodeConnectReq
-        
-        
-    def onGetNodeListReq(self, session):
-        print 'onGetNodeListReq'
-        if session in self.node_entity_map_by_session.keys():
-            res = M2N_Response()
+        if session not in self.node_map.keys():
+            node = NodeInfo(session)
+            self.node_map[session] = node            
+            req = N2M_Request()
+            req.ParseFromString(session.msg_data)
+            print req
+
+            node.host = req.nodeConnectReq.host
+            node.port = req.nodeConnectReq.port
+            self.max_node_id += 1
+            node.node_id = self.max_node_id
+
+            node.stat = WORKING
             res.result = True
-            node = self.node_entity_map_by_session[session]
-            for node_entity in self.node_entity_map_by_id.values():
-                if node_entity != node:
-                    node_info = res.getNodeListRes.nodes.add()
-                    node_info.nodeId = node_entity.node_id
-                    node_info.host = node_entity.get_host()
-                    node_info.port = node_entity.get_port()
-            session.send(M2N_Get_Node_List_Res, res.SerializeToString())                    
+            res.nodeConnectRes.nodeId = node.node_id
         else:
-            session.force_close() # Òì³£×´Ì¬£¬ÐèÒªÏÈ·¢ËÍNodeConnectReq
-       
-    def onRegisterStaticElementReq(self, session):
-        print 'onRegisterStaticElementReq'
-        if session in self.node_entity_map_by_session.keys():
-            req = N2M_Request()
-            req.ParseFromString(session.msg_data)
-            print req
-            
-            res = M2N_Response()
-            guid = req.registerStaticElementReq.guid
-            if guid not in self.element_map.keys():
-                node = self.node_entity_map_by_session[session]
-                if node.node_id == req.registerStaticElementReq.nodeId:
-                    self.element_map[guid] = node.node_id
-                    res.result = True
-                else:
-                    res.result = False
-                    res.errorStr = 'Node id incorrect.'
-            else:
-                res.result = False
-                res.errorStr = 'Element GUID already exists.'
-            session.send(M2N_Register_Static_Element_Res, res.SerializeToString())
-        else:
-            session.force_close() # Òì³£×´Ì¬
-            
-        
-    def onRegisterDynamicElementReq(self, session):
-        print 'onRegisterDynamicElementReq'
-        if session in self.node_entity_map_by_session.keys():
-            req = N2M_Request()
-            req.ParseFromString(session.msg_data)
-            print req
-            res = M2N_Response()
-            self.max_guid += 1
-            guid = self.max_guid# Éú³ÉGUID
-            if guid not in self.element_map.keys():
-                node = self.node_entity_map_by_session[session]
-                if node.node_id == req.registerDynamicElementReq.nodeId:
-                    self.element_map[guid] = node.node_id
-                    res.result = True
-                    res.registerDynamicElementRes.guid = guid
-                else:
-                    res.result = False
-                    res.errorStr = 'Node id incorrect.'
-            else:
-                res.result = False
-                res.errorStr = 'Element GUID already exists.'
-            session.send(M2N_Register_Dynamic_Element_Res, res.SerializeToString())
-        else:
-            print 'force_close'
-            session.force_close() # Òì³£×´Ì¬
-        
-    def onUnregisterElementReq(self, session):
-        print 'onUnregisterElementReq'
-        if session in self.node_entity_map_by_session.keys():
-            req = N2M_Request()
-            req.ParseFromString(session.msg_data)
-            print req
-            res = M2N_Response()
-            guid = req.unregisterElementReq.guid
-            if guid in self.element_map.keys():
-                node = self.node_entity_map_by_session[session]
-                if node.node_id == self.element_map[guid]:
-                    del self.element_map[guid]
-                    res.result = True
-                else:
-                    res.result = False
-                    res.errorStr = 'You do not own the element.'
-            else:
-                res.result = False
-                res.errorStr = 'Element GUID do not exists.'
-            session.send(M2N_Unregister_Element_Res, res.SerializeToString())
-        else:
-            session.force_close() # Òì³£×´Ì¬
-        
-    def onQueryElementReq(self, session):
-        print 'onQueryElementReq'
-        req = N2M_Request()
-        req.ParseFromString(session.msg_data)
-        print req
-        guid = req.queryElementReq.guid
-        print self.element_map
-        print guid
-        res = M2N_Response()
-        if guid not in self.element_map.keys():
             res.result = False
-            res.errorStr = 'Cannot find element.'
-        else:
+            res.errorStr = 'Node already connected.'
+        session.send(M2N_Node_Connect_Res, res.SerializeToString())
+
+    def on_node_disconn_req(self, session):
+        print 'Node disconn.'
+        res = M2N_Response()
+        if session in self.node_map.keys():
+            node = self.node_map[session]
+            if node.stat == WORKING:
+                node.stat = DISCONNECTED
+
+            for guid in node.guid_list:
+                if guid in self.guid_map.keys():
+                    del self.guid_map[guid]
+            del self.node_map[session]
             res.result = True
-            res.queryElementRes.guid = req.queryElementReq.guid
-            res.queryElementRes.nodeId = self.element_map[guid]
+        else:
+            res.result = False
+            res.errorStr = 'Not connected.'
+        session.send(M2N_Node_Disconn_Res, res.SerializeToString())
+
+
+    def on_get_node_list_req(self, session):
+        print 'Get node list.'
+        res = M2N_Response()
+        if session in self.node_map.keys():
+            for sess in self.node_map.keys():
+                if sess is not session:
+                    node = self.node_map[sess]
+                    node_info = res.getNodeListRes.nodeInfos.add()
+                    node_info.nodeId = node.node_id
+                    node_info.host = node.host
+                    node_info.port = node.port
+            res.result = True
+        else:
+            res.result = False
+            res.errorStr = 'Not connected.'
         print res
+        session.send(M2N_Get_Node_List_Res, res.SerializeToString())
+
+    def on_register_element_req(self, session):
+        print 'Register element.'
+        res = M2N_Response()
+        if session in self.node_map.keys():
+            req = N2M_Request()
+            req.ParseFromString(session.msg_data)
+
+            node = self.node_map[session]
+            if node.node_id == req.registerElementReq.nodeId:
+                guid = 0
+                if req.registerElementReq.isStatic is True:
+                    guid = req.registerElementReq.guid
+                else:
+                    self.max_guid += 1
+                    guid = self.max_guid
+                if guid not in self.guid_map.keys():
+                    self.guid_map[guid] = node
+                    node.guid_list.append(guid)
+                    res.result = True
+                    res.registerElementRes.isStatic = req.registerElementReq.isStatic
+                    res.registerElementRes.guid = guid
+                else:
+                    res.result = False
+                    res.errorStr = 'GUID already exists.'
+                    res.registerElementRes.guid = guid
+            else:
+                res.result = False
+                res.errorStr = 'Node id error.'
+        else:
+            res.result = False
+            res.errorStr = 'Not connected.'
+        session.send(M2N_Register_Element_Res, res.SerializeToString())
+
+    def on_unregister_element_req(self, session):
+        print 'Unregister element.'
+        res = M2N_Response()
+        if session in self.node_map.keys():
+            req = N2M_Request()
+            req.ParseFromString(session.msg_data)
+            guid = req.unregisterElementReq.guid
+            if guid in self.guid_map.keys():
+                node = self.guid_map[guid]
+                node.guid_list.remove(guid)
+                del self.guid_map[guid]
+                res.result = True
+            else:
+                res.result = False
+                res.errorStr = 'GUID not exists.'
+        else:
+            res.result = False
+            res.errorStr = 'Not Connected.'
+        session.send(M2N_Unregister_Element_Res, res.SerializeToString())
+
+    def on_query_element_req(self, session):
+        print 'Query element.'
+        res = M2N_Response()
+        if session in self.node_map.keys():
+            req = N2M_Request()
+            req.ParseFromString(session.msg_data)
+            guid = req.queryElementReq.guid
+            if guid in self.guid_map.keys():
+                node = self.guid_map[guid]
+                res.result = True
+                res.queryElementRes.guid = guid
+                res.queryElementRes.nodeId = node.node_id
+            else:
+                res.result = False
+                res.errorStr = 'GUID not exists.'
+                res.queryElementRes.guid = guid
+        else:
+            res.result = False
+            res.errorStr = 'Not Connected.'
         session.send(M2N_Query_Element_Res, res.SerializeToString())
 
-        
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     config = {}
-    config["host"] = '127.0.0.1'
+    config['host'] = '127.0.0.1'
     config['port'] = 8000
     config['timeout'] = 10
     master = Master()
-    master.init_master(config)
-    
+    master.init_master(config) 

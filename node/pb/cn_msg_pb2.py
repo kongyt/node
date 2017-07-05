@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='cn_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x0c\x63n_msg.proto\x12\x04node\"y\n\x0b\x43\x32N_Request\x12\x34\n\x10\x63lientConnectReq\x18\x01 \x01(\x0b\x32\x1a.node.C2N_ClientConnectReq\x12\x34\n\x10\x63lientDisconnReq\x18\x02 \x01(\x0b\x32\x1a.node.C2N_ClientDisconnReq\"\x9c\x01\n\x0cN2C_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x34\n\x10\x63lientConnectRes\x18\x03 \x01(\x0b\x32\x1a.node.N2C_ClientConnectRes\x12\x34\n\x10\x63lientDisconnRes\x18\x04 \x01(\x0b\x32\x1a.node.N2C_ClientDisconnRes\"\x16\n\x14\x43\x32N_ClientConnectReq\"$\n\x14N2C_ClientConnectRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"\x16\n\x14\x43\x32N_ClientDisconnReq\"\x16\n\x14N2C_ClientDisconnRes*\x80\x01\n\x06\x43N_Msg\x12\x1c\n\x16\x43\x32N_Client_Connect_Req\x10\x81\x80\x0c\x12\x1c\n\x16N2C_Client_Connect_Res\x10\x82\x80\x0c\x12\x1c\n\x16\x43\x32N_Client_Disconn_Req\x10\x83\x80\x0c\x12\x1c\n\x16N2C_Client_Disconn_Res\x10\x84\x80\x0c\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x0c\x63n_msg.proto\x12\x04node\"y\n\x0b\x43\x32N_Request\x12\x34\n\x10\x63lientConnectReq\x18\x01 \x01(\x0b\x32\x1a.node.C2N_ClientConnectReq\x12\x34\n\x10\x63lientDisconnReq\x18\x02 \x01(\x0b\x32\x1a.node.C2N_ClientDisconnReq\"\xaf\x01\n\x0cN2C_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x11\n\terrorCode\x18\x02 \x01(\x05\x12\x10\n\x08\x65rrorStr\x18\x03 \x01(\t\x12\x34\n\x10\x63lientConnectRes\x18\x04 \x01(\x0b\x32\x1a.node.N2C_ClientConnectRes\x12\x34\n\x10\x63lientDisconnRes\x18\x05 \x01(\x0b\x32\x1a.node.N2C_ClientDisconnRes\"7\n\x14\x43\x32N_ClientConnectReq\x12\x11\n\tisService\x18\x01 \x01(\x08\x12\x0c\n\x04guid\x18\x02 \x01(\x04\"$\n\x14N2C_ClientConnectRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"\x16\n\x14\x43\x32N_ClientDisconnReq\"\x16\n\x14N2C_ClientDisconnRes*\x80\x01\n\x06\x43N_Msg\x12\x1c\n\x16\x43\x32N_Client_Connect_Req\x10\x81\x80\x0c\x12\x1c\n\x16N2C_Client_Connect_Res\x10\x82\x80\x0c\x12\x1c\n\x16\x43\x32N_Client_Disconn_Req\x10\x83\x80\x0c\x12\x1c\n\x16N2C_Client_Disconn_Res\x10\x84\x80\x0c\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
 _CN_MSG = _descriptor.EnumDescriptor(
@@ -48,8 +48,8 @@ _CN_MSG = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=415,
-  serialized_end=543,
+  serialized_start=467,
+  serialized_end=595,
 )
 _sym_db.RegisterEnumDescriptor(_CN_MSG)
 
@@ -114,22 +114,29 @@ _N2C_RESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='errorStr', full_name='node.N2C_Response.errorStr', index=1,
-      number=2, type=9, cpp_type=9, label=1,
+      name='errorCode', full_name='node.N2C_Response.errorCode', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='errorStr', full_name='node.N2C_Response.errorStr', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='clientConnectRes', full_name='node.N2C_Response.clientConnectRes', index=2,
-      number=3, type=11, cpp_type=10, label=1,
+      name='clientConnectRes', full_name='node.N2C_Response.clientConnectRes', index=3,
+      number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='clientDisconnRes', full_name='node.N2C_Response.clientDisconnRes', index=3,
-      number=4, type=11, cpp_type=10, label=1,
+      name='clientDisconnRes', full_name='node.N2C_Response.clientDisconnRes', index=4,
+      number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -147,7 +154,7 @@ _N2C_RESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=146,
-  serialized_end=302,
+  serialized_end=321,
 )
 
 
@@ -158,6 +165,20 @@ _C2N_CLIENTCONNECTREQ = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='isService', full_name='node.C2N_ClientConnectReq.isService', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='guid', full_name='node.C2N_ClientConnectReq.guid', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -170,8 +191,8 @@ _C2N_CLIENTCONNECTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=304,
-  serialized_end=326,
+  serialized_start=323,
+  serialized_end=378,
 )
 
 
@@ -201,8 +222,8 @@ _N2C_CLIENTCONNECTRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=328,
-  serialized_end=364,
+  serialized_start=380,
+  serialized_end=416,
 )
 
 
@@ -225,8 +246,8 @@ _C2N_CLIENTDISCONNREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=366,
-  serialized_end=388,
+  serialized_start=418,
+  serialized_end=440,
 )
 
 
@@ -249,8 +270,8 @@ _N2C_CLIENTDISCONNRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=390,
-  serialized_end=412,
+  serialized_start=442,
+  serialized_end=464,
 )
 
 _C2N_REQUEST.fields_by_name['clientConnectReq'].message_type = _C2N_CLIENTCONNECTREQ

@@ -1,4 +1,10 @@
-#coding: utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Date    : 2017-07-03 17:53:50
+# @Author  : kongyt (839339849@qq.com)
+# @Link    : https://www.kongyt.com
+# @Version : 1
+
 
 from abc import *
 from socket import *
@@ -6,9 +12,6 @@ from select import *
 from ctypes import *
 import struct
 
-SELECT = 0
-EPOLL  = 1
-POLL   = 2
 
 class Session:
     def __init__(self, sock, net):
@@ -19,7 +22,7 @@ class Session:
         self.msg_id = 0
         self.msg_len = 0
         self.msg_data = ""
-        
+
     def send(self, msg_id, data):
         data_len = len(data) + 8
         buf = create_string_buffer(8)
@@ -27,28 +30,28 @@ class Session:
         struct.pack_into('!I', buf, 4, data_len)
         self.wbuf += (buf.raw + data)
         self.net.set_writable(self.sock)
-        
-        
+
     def force_close(self):
         self.net.close_session(self)
-        
+
+
 class MsgHandle:
     @abstractmethod
-    def on_receive_msg(self, session):
+    def on_recvive_msg(self, session):
         pass
-        
+
     @abstractmethod
     def on_session_close(self, session):
         pass
-        
+
+
 class DefMsgHandle(MsgHandle):
     def on_receive_msg(self, session):
-        print 'receive msg from '+session.sock.getpeername()
-        
+        print 'receive msg from', session.sock.getpeername()
+
     def on_session_close(self, session):
-        print 'session close ' + session.sock.getpeername()
-        
-        
+        print 'session closed.', session.sock.getpeername()
+
 class Net:
     def __init__(self):
         self.type = 0
@@ -58,60 +61,56 @@ class Net:
     def init(self, type, host, port, timeout):
         if type == SELECT:
             self.init_as_select(host, port, timeout)
-        elif type == POLL:
-            self.init_as_poll(host, port, timeout)
         elif type == EPOLL:
             self.init_as_epoll(host, port, timeout)
         else:
-            print "net init with error type."
-    
-    def register_msg_handle(self, handle):
-        self.msg_handle = handle
-            
+            print 'net init with error type.'
+
+    def register_msg_handle(self, msg_handle):
+        self.msg_handle = msg_handle
+
     def dispatch_msg(self, session):
         self.msg_handle.on_receive_msg(session)
-        
-    def dispatch_close_msg(self, session):
+
+    def dispatch_close_event(self, session):
         self.msg_handle.on_session_close(session)
-        
+
     def set_writable(self, sock):
         if self.type == SELECT:
-            if  sock not in self.write_list:
+            if sock not in self.write_list:
                 self.write_list.append(sock)
-        if self.type == EPOLL:
+        elif self.type == EPOLL:
             self.epl.modify(sock.fileno(), EPOLLOUT)
-        
+
     def update(self):
         if self.type == SELECT:
             self.update_as_select()
         elif self.type == EPOLL:
             self.update_as_epoll()
-        elif self.type == POLL:
-            self.update_as_poll()
         else:
-            print "net update with error type."
-            
+            print 'net update with error type.'
+
     def recv(self, session, data):
         session.rbuf += data
         buf_data = session.rbuf
                     
-        # ´¦Àí·Ö°ü
+        # å¤„ç†åˆ†åŒ…
         while len(buf_data) >= 8:
             session.msg_id = struct.unpack('!I', buf_data[0:4])[0]
             session.msg_len = struct.unpack('!I', buf_data[4:8])[0]
-            # ÅĞ¶Ï°üÊÇ·ñ½ÓÊÕÍêÕû
+            # åˆ¤æ–­åŒ…æ˜¯å¦æ¥æ”¶å®Œæ•´
             if len(buf_data) >= session.msg_len:
                 session.msg_data = buf_data[8:session.msg_len]
                 session.rbuf = buf_data[session.msg_len:]
                 buf_data = session.rbuf
                         
-                # ·Ö·¢ÏûÏ¢°ü¸øÉÏ²ã
+                # åˆ†å‘æ¶ˆæ¯åŒ…ç»™ä¸Šå±‚
                 self.dispatch_msg(session)
                 
             else:
-                break  
+                break 
 
-                
+
     def connect_to(self, host, port):
         sock = socket(AF_INET, SOCK_STREAM, 0)
         sock.connect((host, port))
@@ -124,23 +123,23 @@ class Net:
         return session      
                 
     def close_session(self, session):
-        if self.type == SELECT:# SELECTÄ£Ê½
+        if self.type == SELECT:# SELECTæ¨¡å¼
             if session.sock in self.read_list:
                 self.read_list.remove(session.sock)
             if session.sock in self.write_list:
                 self.write_list.remove(session.sock)
-        elif self.type == EPOLL:# EPOLLÄ£Ê½
+        elif self.type == EPOLL:# EPOLLæ¨¡å¼
             self.epl.unregister(session.sock.fileno())
             
-        # ´ÓSession MapÖĞÒÆ³ı
+        # ä»Session Mapä¸­ç§»é™¤
         del self.session_map[session.sock.fileno()]
                 
         # close socket
         session.sock.close()     
-        # ·Ö·¢Session CloseµÄÏûÏ¢¸øÉÏ²ã            
-        self.dispatch_close_msg(session)
+        # åˆ†å‘Session Closeçš„æ¶ˆæ¯ç»™ä¸Šå±‚            
+        self.dispatch_close_event(session)
     
-    # -----------------SELECTÄ£Ê½--------------------      
+    # -----------------SELECTæ¨¡å¼--------------------      
     def init_as_select(self, host, port, timeout):
         self.type = SELECT
         self.addr = (host, port)
@@ -173,12 +172,11 @@ class Net:
                 try:
                     data = sock.recv(1024)                
                     if data:
-                        # ·Ö°ü²¢·Ö·¢ÏûÏ¢
+                        # åˆ†åŒ…å¹¶åˆ†å‘æ¶ˆæ¯
                         self.recv(session, data)
                     else:
                         self.close_session(session)
                 except Exception,e:
-                    print e
                     self.close_session(session)
 
         # write
@@ -194,7 +192,7 @@ class Net:
             self.close_session(self.session_map[sock.fileno()])
             
             
-    #-----------------EPOLLÄ£Ê½---------------------
+    #-----------------EPOLLæ¨¡å¼---------------------
     def init_as_epoll(self, host, port, timeout):
         self.type = EPOLL
         self.addr = (host, port)
@@ -207,6 +205,7 @@ class Net:
         self.srv_sock.setblocking(False)
         self.epl = epoll()
         self.epl.register(self.srv_sock.fileno(), EPOLLIN)
+
         
     def update_as_epoll(self):
         try:
@@ -239,18 +238,13 @@ class Net:
                         session.sock.send(session.wbuf)
                         session.wbuf = ""
                     self.epl.modify(session.sock.fileno(), EPOLLIN)
-        
-    #-----------------POLLÄ£Ê½-----------------------
-    def init_as_poll(self, host, port, timeout):
-        print "Not implement."
-        
-    def update_as_poll(self):
-        print "Not implement."
-                    
-                    
+
+SELECT = 1
+EPOLL  = 2
+
 if __name__ == "__main__":
     net = Net()
-    net.init(SELECT, "127.0.0.1", 8000, 0.01)
+    net.init(SELECT, "127.0.0.1", 8000, 0.2)
     while True:
         net.update()
-        
+        print 'update'

@@ -2,3 +2,4 @@ import mn_msg_pb2
 import nn_msg_pb2
 import cn_msg_pb2
 import element_msg_pb2
+import chat_msg_pb2

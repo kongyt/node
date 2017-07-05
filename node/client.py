@@ -1,183 +1,263 @@
-#coding: utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Date    : 2017-07-05 14:15:55
+# @Author  : kongyt (839339849@qq.com)
+# @Link    : https://www.kongyt.com
+# @Version : 1
 
 import os
+import sys
+import struct
+import time
+from thread import start_new
+from ctypes import *
+
+
 from socket import *
+from element import *
 from pb.cn_msg_pb2 import *
 from pb.element_msg_pb2 import *
-from ctypes import *
-import struct
-from thread import start_new
-import time
+from pb.chat_msg_pb2 import *
 
-def recv_msg(client):
-    while client.is_connected:
-        data = client.sock.recv(1024)
-        if data:
-            client.rbuf += data
-            buf_data = client.rbuf
-            while len(buf_data) >= 8:
-                client.msg_id = struct.unpack('!I', buf_data[0:4])[0]
-                client.msg_len = struct.unpack('!I', buf_data[4:8])[0]
-                if len(buf_data) >= client.msg_len:
-                    client.msg_data = buf_data[8:client.msg_len]
-                    client.rbuf = buf_data[client.msg_len:]
-                    buf_data = client.rbuf
-                    client.on_message()
-                else:
-                    break   
-        else:
-            client.is_connected = False
-            client.server_close = True
-            client.is_watting = False
-            client.run_flag = False
-            print 'Server Close session.'
-    
-    
-class Client:
-    def __init__(self):
-        self.sock = socket(AF_INET, SOCK_STREAM, 0)
-        self.is_connected = True
-        self.rbuf = ""
+class ChatModule:
+    def __init__(self, client):
+        self.msg_handle = {}
+
+    def register(self, msg_id, handle):
+        self.msg_handle[msg_id] = handle
+
+
+    def on_message(self, msg):
+        if msg.msgId in self.msg_handle.keys():
+            self.msg_handle[msg.msg_id](self, msg)
+
+    def on_connect_chat_srv_res(self, msg):
+        pass
+
+
+class Client(Element, Interface):
+    def __init__(self, host, port):
+        Element.__init__(self, self)
         self.msg_id = 0
         self.msg_len = 0
         self.msg_data = ""
+        self.rbuf = ""
         self.run_flag = True
-        self.is_waitting = False
-        self.server_close = False
-        self.handle_map = {
-            N2C_Client_Connect_Res   : Client.on_connect_res,
-            N2C_Client_Disconn_Res   : Client.on_disconn_res,
-            0x00000000               : Client.on_element_msg,
-        }
-        
-    def init_net(self, host, port):
+        self.guid = 0
+        self.sock = socket(AF_INET, SOCK_STREAM, 0)
         self.sock.connect((host, port))
-        print 'connect success.'
-        start_new(recv_msg, (self,)) # 开一个线程用来接收数据
-        self.send_conn()
+        self.handle_map = {
+            N2C_Client_Connect_Res    : Client.on_client_connect_res,
+            N2C_Client_Disconn_Res    : Client.on_client_disconn_res,
+            Element_Msg_Id              : Client.on_element_msg,
+        }
+        start_new(Client.recv_msg, (self, ))
+
+    def send_client_connect_req(self, service, guid):
+        req = C2N_Request()
+        if service == True:
+            req.clientConnectReq.isService = True
+            req.clientConnectReq.guid = guid
+        self.send_msg(C2N_Client_Connect_Req, req)
+
+    def on_client_connect_res(self):
+        res = N2C_Response()
+        res.ParseFromString(self.msg_data)
+        if res.result == True:
+            print 'GUID:',res.clientConnectRes.guid
+            self.guid = res.clientConnectRes.guid
+        else:
+            print 'connect error.'
+            sys.exit(0)
+
+    def send_client_disconn_req(self):
+        req = C2N_Request()
+        self.send_msg(C2N_Client_Disconn_Req, req)
+
+    def on_client_disconn_res(self):
+        self.run_flag = False
+        self.sock.close()
+
+    def run(self, service, guid):
+        self.send_client_connect_req(service, guid)
+        while self.run_flag:
+            data = raw_input('>>>')
+            if data:
+                cmds = data.split()
+
+                if cmds[0] == 'help':
+                    self.help()
+                elif cmds[0] == 'quit':
+                    self.quit()
+                elif cmds[0] == 'helo' and len(cmds) == 3:
+                    self.helo(int(cmds[1]), cmds[2])
+                elif len(cmds) == 4 and  cmds[0] == 'conn' and cmds[1] == 'chat' and cmds[2] == 'server':
+                    self.chat_server_guid = int(cmds[3])
+                    self.connect_chat_server(self.chat_server_guid)
+                elif len(cmds) == 3 and  cmds[0] == 'disconn' and cmds[1] == 'chat' and cmds[2] == 'server':
+                    self.disconn_chat_server(self.chat_server_guid)
+                elif len(cmds) == 3 and cmds[0] == 'join' and cmds[1] == 'room':
+                    self.room_id = int(cmds[2])
+                    self.join_room(self.room_id)
+                elif len(cmds) == 2 and cmds[0] == 'say':
+                    self.say(cmds[1])
+                elif len(cmds) == 3 and cmds[0] == 'leave' and cmds[1] == 'room':
+                    self.leave_room(self.room_id)
+                else :
+                    print 'unkown command.'
+
+    def connect_chat_server(self, guid):
+        req = ChatReq()
+
+        data = req.SerializeToString()
+
+        msg = ElementMsg()
+        msg.msgId = Connect_Chat_Srv_Req
+        msg.eleFrom = self.guid
+        msg.eleTo = guid
+        msg.data = data
+        self.send_element_msg(msg)
         
-    def run(self):        
-        self.data_input()            # 输入线程主循环
-        
-        
-    # 发送消息包
+
+    def disconn_chat_server(self, guid):
+        req = ChatReq()
+
+        data = req.SerializeToString()
+
+        msg = ElementMsg()
+        msg.msgId = Disconn_Chat_Srv_Req
+        msg.eleFrom = self.guid
+        msg.eleTo = guid
+        msg.data = data
+        self.send_element_msg(msg)
+
+    def join_room(self, room_id):
+        req = ChatReq()
+        req.joinRoomReq.roomId = room_id
+
+        data = req.SerializeToString()
+
+        msg = ElementMsg()
+        msg.msgId = Join_Room_Req
+        msg.eleFrom = self.guid
+        msg.eleTo = self.chat_server_guid
+        msg.data = data
+        self.send_element_msg(msg)
+
+    def say(self, txt):
+        req = ChatReq()
+        req.sayToRoomReq.roomId = self.room_id
+        req.sayToRoomReq.txt = bytes(txt)
+
+        data = req.SerializeToString()
+
+        msg = ElementMsg()
+        msg.msgId = Say_To_Room_Req
+        msg.eleFrom = self.guid
+        msg.eleTo = self.chat_server_guid
+        msg.data = data
+        print msg
+        req = ChatReq()
+        req.ParseFromString(data)
+        self.send_element_msg(msg)
+
+    def leave_room(self, room_id):
+        req = ChatReq()
+        req.leaveRoomReq.roomId = room_id
+
+        data = req.SerializeToString()
+
+        msg = ElementMsg()
+        msg.msgId = Leave_Room_Req
+        msg.eleFrom = self.guid
+        msg.eleTo = self.chat_server_guid
+        msg.data = data
+        self.send_element_msg(msg)
+
+    def helo(self, guid, txt):
+        h = Helo()
+        h.txt = txt
+        data = h.SerializeToString()
+
+        msg = ElementMsg()
+        msg.msgId = Ele_Helo
+        msg.eleFrom = self.guid
+        msg.eleTo = guid
+        msg.data = data
+        self.send_element_msg(msg)
+
+    def quit(self):
+        self.send_client_disconn_req()
+
+    def send_element_msg(self, msg):
+        print 'send element msg.'
+        self.send_msg(Element_Msg_Id, msg)
+
+    def on_element_msg(self):
+        msg = ElementMsg()
+        msg.ParseFromString(self.msg_data)
+        self.on_message(msg)
+
+    def on_message(self, msg):
+        print 'msgId:', msg.msgId
+        print 'from :', msg.eleFrom
+        print 'to   :', msg.eleTo
+        if (msg.msgId & 0x00010000) == 0x00010000:
+            m = None
+            if msg.msgId != User_Say_Noti:
+                m = ChatRes()
+            else:
+                m = ChatNoti()
+            m.ParseFromString(msg.data)
+            print 'data :', m
+        else:
+            print 'data :', msg.data
+
+
+    def recv_msg(self):
+        while self.run_flag == True:
+            data = self.sock.recv(1024)
+            if data:
+                self.rbuf += data
+                buf_data = self.rbuf
+                while len(buf_data) >= 8:
+                    self.msg_id = struct.unpack('!I', buf_data[0:4])[0]
+                    self.msg_len = struct.unpack('!I', buf_data[4:8])[0]
+                    if len(buf_data) >= self.msg_len:
+                        self.msg_data = buf_data[8:self.msg_len]
+                        self.rbuf = buf_data[self.msg_len:]
+                        buf_data = self.rbuf
+                        self.dispatch_msg()
+                    else:
+                        break
+            else:
+                self.run_flag = False
+                print 'Server close session.'
+
+    def dispatch_msg(self):
+        print ''
+        if self.msg_id in self.handle_map.keys():
+            self.handle_map[self.msg_id](self)
+        else:
+            print 'unkown msg.'
+
     def send_msg(self, msg_id, msg):
-        self.is_waitting = True
         data = msg.SerializeToString()
         data_len = len(data) + 8
         buf = create_string_buffer(8)
         struct.pack_into('!I', buf, 0, msg_id)
         struct.pack_into('!I', buf, 4, data_len)
-        wbuf = ""+buf.raw + data
+        wbuf = buf.raw + data
         self.sock.send(wbuf)
-    
-    def on_message(self):
-        if self.handle_map.has_key(self.msg_id):
-            self.handle_map[self.msg_id](self)
-        
-        self.is_waitting = False    
-        
-    
-    def data_input(self):
-        while self.run_flag:           
-            if self.is_waitting is True:
-                time.sleep(0.02)
-                continue
-                
-            data = raw_input(">>>")
-            if data:
-                cmds = data.split()
-                
-                flag = False
-                # 非联网功能
-                if cmds[0] == "help":
-                    self.help()
-                elif cmds[0] == "quit" or cmds[0] == 'q' or cmds[0] == 'Q':
-                    self.quit()
-                else:
-                    flag = True
-                if flag == False:
-                    continue
-            
-                if self.server_close is True:
-                    print "server quit."
-                    continue
-            
-                # 需要联网的功能
-                if cmds[0] == 'connect' and len(cmds) == 3:
-                    self.init_net(cmds[1], int(cmds[2]))
-                elif cmds[0] == 'helo' and len(cmds) == 3:
-                    self.send_helo(int(cmds[1]), cmds[2])
-                else:
-                    print "Unknown command."
 
-                    
-    def send_helo(self, to_guid, txt):
-        helo = Helo()
-        helo.txt = txt
-        data = helo.SerializeToString()
-    
-        msg = ElementMsg()
-        msg.msgId = EM_HELO
-        msg.from_element = self.guid
-        msg.to_element = to_guid
-        msg.serializeData = data
-        self.send_msg(0x00000000, msg)
-        self.is_waitting = False
-        
-    def help(self):
-        print 'help'
-        print 'connect <ip>   <port>'
-        print 'helo    <guid_to> <txt>'
-        print 'quit'        
-    
-    def quit(self):
-        self.send_disconn()
-    
-    def real_quit(self):
-        self.run_flag = False
-        self.is_connected = False
-        self.sock.close()
-        
-    def send_conn(self):
-        req = C2N_Request()
-        self.send_msg(C2N_Client_Connect_Req, req)
-        
-    def send_disconn(self):
-        req = C2N_Request()
-        self.send_msg(C2N_Client_Disconn_Req, req)
-        
-    def on_connect_res(self):
-        res = N2C_Response()
-        res.ParseFromString(self.msg_data)
-        if res.result == True:
-            self.guid = res.clientConnectRes.guid
-            print 'GUID:'+str(self.guid)
-        else:
-            print 'connect failed.'
-    
-    def on_disconn_res(self):
-        self.real_quit()    
-       
-    def on_register_account(self):
-        res = Response()
-        res.ParseFromString(self.msg_data)
-        if res.result == True:
-            print "Register Success."
-        else:
-            self.stat = CONNECTED
-            print "Register Failed: " + result.errorStr
-    
-    def on_element_msg(self):
-        msg = ElementMsg()
-        msg.ParseFromString(self.msg_data)
-        print msg
-            
-            
+
 if __name__ == "__main__":
-    print os.sys.argv
+    print os.sys.argv 
     port = os.sys.argv[1]
-    client = Client()
-    client.init_net('127.0.0.1', int(port))
-    client.run()
-    print 'client quit.'
+    guid = None
+    isService = False
+    if len(os.sys.argv) == 3:
+        guid = int(os.sys.argv[2])
+        isService = True
+    client = Client('127.0.0.1', int(port))
+    client.run(isService, guid)

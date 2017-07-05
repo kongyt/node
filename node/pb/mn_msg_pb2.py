@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='mn_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x0cmn_msg.proto\x12\x04node\"\x9f\x03\n\x0bN2M_Request\x12\x30\n\x0enodeConnectReq\x18\x01 \x01(\x0b\x32\x18.node.N2M_NodeConnectReq\x12,\n\x0cgetNodeIdReq\x18\x02 \x01(\x0b\x32\x16.node.N2M_GetNodeIdReq\x12\x30\n\x0egetNodeListReq\x18\x03 \x01(\x0b\x32\x18.node.N2M_GetNodeListReq\x12\x44\n\x18registerStaticElementReq\x18\x04 \x01(\x0b\x32\".node.N2M_RegisterStaticElementReq\x12\x46\n\x19registerDynamicElementReq\x18\x05 \x01(\x0b\x32#.node.N2M_RegisterDynamicElementReq\x12<\n\x14unregisterElementReq\x18\x06 \x01(\x0b\x32\x1e.node.N2M_UnregisterElementReq\x12\x32\n\x0fqueryElementReq\x18\x07 \x01(\x0b\x32\x19.node.N2M_QueryElementReq\"\xc2\x03\n\x0cM2N_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x30\n\x0enodeConnectRes\x18\x03 \x01(\x0b\x32\x18.node.M2N_NodeConnectRes\x12,\n\x0cgetNodeIdRes\x18\x04 \x01(\x0b\x32\x16.node.M2N_GetNodeIdRes\x12\x30\n\x0egetNodeListRes\x18\x05 \x01(\x0b\x32\x18.node.M2N_GetNodeListRes\x12\x44\n\x18registerStaticElementRes\x18\x06 \x01(\x0b\x32\".node.M2N_RegisterStaticElementRes\x12\x46\n\x19registerDynamicElementRes\x18\x07 \x01(\x0b\x32#.node.M2N_RegisterDynamicElementRes\x12<\n\x14unregisterElementRes\x18\x08 \x01(\x0b\x32\x1e.node.M2N_UnregisterElementRes\x12\x32\n\x0fqueryElementRes\x18\t \x01(\x0b\x32\x19.node.N2M_QueryElementRes\"S\n\x12N2M_NodeConnectReq\x12\x11\n\thasNodeId\x18\x01 \x01(\x08\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05\x12\x0c\n\x04host\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\x05\"\x14\n\x12M2N_NodeConnectRes\"\x12\n\x10N2M_GetNodeIdReq\"\"\n\x10M2N_GetNodeIdRes\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"\x14\n\x12N2M_GetNodeListReq\":\n\x0cM2N_NodeInfo\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04host\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"7\n\x12M2N_GetNodeListRes\x12!\n\x05nodes\x18\x01 \x03(\x0b\x32\x12.node.M2N_NodeInfo\"<\n\x1cN2M_RegisterStaticElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04guid\x18\x02 \x01(\x04\"\x1e\n\x1cM2N_RegisterStaticElementRes\"/\n\x1dN2M_RegisterDynamicElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"-\n\x1dM2N_RegisterDynamicElementRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"(\n\x18N2M_UnregisterElementReq\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"\x1a\n\x18M2N_UnregisterElementRes\"#\n\x13N2M_QueryElementReq\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"3\n\x13N2M_QueryElementRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05*\xcc\x03\n\x06MN_Msg\x12\x1a\n\x14N2M_Node_Connect_Req\x10\x81\x80\x04\x12\x1a\n\x14M2N_Node_Connect_Res\x10\x82\x80\x04\x12\x19\n\x13N2M_Get_Node_Id_Req\x10\x83\x80\x04\x12\x19\n\x13M2N_Get_Node_Id_Res\x10\x84\x80\x04\x12\x1b\n\x15N2M_Get_Node_List_Req\x10\x85\x80\x04\x12\x1b\n\x15M2N_Get_Node_List_Res\x10\x86\x80\x04\x12%\n\x1fN2M_Register_Static_Element_Req\x10\x87\x80\x04\x12%\n\x1fM2N_Register_Static_Element_Res\x10\x88\x80\x04\x12&\n N2M_Register_Dynamic_Element_Req\x10\x89\x80\x04\x12&\n M2N_Register_Dynamic_Element_Res\x10\x8a\x80\x04\x12 \n\x1aN2M_Unregister_Element_Req\x10\x8b\x80\x04\x12 \n\x1aM2N_Unregister_Element_Res\x10\x8c\x80\x04\x12\x1b\n\x15N2M_Query_Element_Req\x10\x8d\x80\x04\x12\x1b\n\x15M2N_Query_Element_Res\x10\x8e\x80\x04\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x0cmn_msg.proto\x12\x04node\"\xcd\x02\n\x0bN2M_Request\x12\x30\n\x0enodeConnectReq\x18\x01 \x01(\x0b\x32\x18.node.N2M_NodeConnectReq\x12.\n\x0cgetNodeIdReq\x18\x02 \x01(\x0b\x32\x18.node.N2M_NodeDisconnReq\x12\x30\n\x0egetNodeListReq\x18\x03 \x01(\x0b\x32\x18.node.N2M_GetNodeListReq\x12\x38\n\x12registerElementReq\x18\x04 \x01(\x0b\x32\x1c.node.N2M_RegisterElementReq\x12<\n\x14unregisterElementReq\x18\x05 \x01(\x0b\x32\x1e.node.N2M_UnregisterElementReq\x12\x32\n\x0fqueryElementReq\x18\x06 \x01(\x0b\x32\x19.node.N2M_QueryElementReq\"\x85\x03\n\x0cM2N_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x11\n\terrorCode\x18\x02 \x01(\x05\x12\x10\n\x08\x65rrorStr\x18\x03 \x01(\t\x12\x30\n\x0enodeConnectRes\x18\x04 \x01(\x0b\x32\x18.node.M2N_NodeConnectRes\x12\x30\n\x0enodeDisconnRes\x18\x05 \x01(\x0b\x32\x18.node.M2N_NodeDisconnRes\x12\x30\n\x0egetNodeListRes\x18\x06 \x01(\x0b\x32\x18.node.M2N_GetNodeListRes\x12\x38\n\x12registerElementRes\x18\x07 \x01(\x0b\x32\x1c.node.M2N_RegisterElementRes\x12<\n\x14unregisterElementRes\x18\x08 \x01(\x0b\x32\x1e.node.M2N_UnregisterElementRes\x12\x32\n\x0fqueryElementRes\x18\t \x01(\x0b\x32\x19.node.M2N_QueryElementRes\"0\n\x12N2M_NodeConnectReq\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x05\"$\n\x12M2N_NodeConnectRes\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\"\x14\n\x12N2M_NodeDisconnReq\"\x14\n\x12M2N_NodeDisconnRes\":\n\x0cM2N_NodeInfo\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04host\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"\x14\n\x12N2M_GetNodeListReq\";\n\x12M2N_GetNodeListRes\x12%\n\tnodeInfos\x18\x01 \x03(\x0b\x32\x12.node.M2N_NodeInfo\"H\n\x16N2M_RegisterElementReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x10\n\x08isStatic\x18\x02 \x01(\x08\x12\x0c\n\x04guid\x18\x03 \x01(\x04\"8\n\x16M2N_RegisterElementRes\x12\x10\n\x08isStatic\x18\x01 \x01(\x08\x12\x0c\n\x04guid\x18\x02 \x01(\x04\"(\n\x18N2M_UnregisterElementReq\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"\x1a\n\x18M2N_UnregisterElementRes\"#\n\x13N2M_QueryElementReq\x12\x0c\n\x04guid\x18\x01 \x01(\x04\"3\n\x13M2N_QueryElementRes\x12\x0c\n\x04guid\x18\x01 \x01(\x04\x12\x0e\n\x06nodeId\x18\x02 \x01(\x05*\xf0\x02\n\x06MN_Msg\x12\x1a\n\x14N2M_Node_Connect_Req\x10\x81\x80\x04\x12\x1a\n\x14M2N_Node_Connect_Res\x10\x82\x80\x04\x12\x1a\n\x14N2M_Node_Disconn_Req\x10\x83\x80\x04\x12\x1a\n\x14M2N_Node_Disconn_Res\x10\x84\x80\x04\x12\x1b\n\x15N2M_Get_Node_List_Req\x10\x85\x80\x04\x12\x1b\n\x15M2N_Get_Node_List_Res\x10\x86\x80\x04\x12\x1e\n\x18N2M_Register_Element_Req\x10\x87\x80\x04\x12\x1e\n\x18M2N_Register_Element_Res\x10\x88\x80\x04\x12 \n\x1aN2M_Unregister_Element_Req\x10\x89\x80\x04\x12 \n\x1aM2N_Unregister_Element_Res\x10\x8a\x80\x04\x12\x1b\n\x15N2M_Query_Element_Req\x10\x8b\x80\x04\x12\x1b\n\x15M2N_Query_Element_Res\x10\x8c\x80\x04\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
 _MN_MSG = _descriptor.EnumDescriptor(
@@ -38,11 +38,11 @@ _MN_MSG = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='N2M_Get_Node_Id_Req', index=2, number=65539,
+      name='N2M_Node_Disconn_Req', index=2, number=65539,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='M2N_Get_Node_Id_Res', index=3, number=65540,
+      name='M2N_Node_Disconn_Res', index=3, number=65540,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -54,60 +54,50 @@ _MN_MSG = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='N2M_Register_Static_Element_Req', index=6, number=65543,
+      name='N2M_Register_Element_Req', index=6, number=65543,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='M2N_Register_Static_Element_Res', index=7, number=65544,
+      name='M2N_Register_Element_Res', index=7, number=65544,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='N2M_Register_Dynamic_Element_Req', index=8, number=65545,
+      name='N2M_Unregister_Element_Req', index=8, number=65545,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='M2N_Register_Dynamic_Element_Res', index=9, number=65546,
+      name='M2N_Unregister_Element_Res', index=9, number=65546,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='N2M_Unregister_Element_Req', index=10, number=65547,
+      name='N2M_Query_Element_Req', index=10, number=65547,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='M2N_Unregister_Element_Res', index=11, number=65548,
-      options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='N2M_Query_Element_Req', index=12, number=65549,
-      options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='M2N_Query_Element_Res', index=13, number=65550,
+      name='M2N_Query_Element_Res', index=11, number=65548,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1546,
-  serialized_end=2006,
+  serialized_start=1318,
+  serialized_end=1686,
 )
 _sym_db.RegisterEnumDescriptor(_MN_MSG)
 
 MN_Msg = enum_type_wrapper.EnumTypeWrapper(_MN_MSG)
 N2M_Node_Connect_Req = 65537
 M2N_Node_Connect_Res = 65538
-N2M_Get_Node_Id_Req = 65539
-M2N_Get_Node_Id_Res = 65540
+N2M_Node_Disconn_Req = 65539
+M2N_Node_Disconn_Res = 65540
 N2M_Get_Node_List_Req = 65541
 M2N_Get_Node_List_Res = 65542
-N2M_Register_Static_Element_Req = 65543
-M2N_Register_Static_Element_Res = 65544
-N2M_Register_Dynamic_Element_Req = 65545
-M2N_Register_Dynamic_Element_Res = 65546
-N2M_Unregister_Element_Req = 65547
-M2N_Unregister_Element_Res = 65548
-N2M_Query_Element_Req = 65549
-M2N_Query_Element_Res = 65550
+N2M_Register_Element_Req = 65543
+M2N_Register_Element_Res = 65544
+N2M_Unregister_Element_Req = 65545
+M2N_Unregister_Element_Res = 65546
+N2M_Query_Element_Req = 65547
+M2N_Query_Element_Res = 65548
 
 
 
@@ -140,29 +130,22 @@ _N2M_REQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='registerStaticElementReq', full_name='node.N2M_Request.registerStaticElementReq', index=3,
+      name='registerElementReq', full_name='node.N2M_Request.registerElementReq', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='registerDynamicElementReq', full_name='node.N2M_Request.registerDynamicElementReq', index=4,
+      name='unregisterElementReq', full_name='node.N2M_Request.unregisterElementReq', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='unregisterElementReq', full_name='node.N2M_Request.unregisterElementReq', index=5,
+      name='queryElementReq', full_name='node.N2M_Request.queryElementReq', index=5,
       number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='queryElementReq', full_name='node.N2M_Request.queryElementReq', index=6,
-      number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -180,7 +163,7 @@ _N2M_REQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=23,
-  serialized_end=438,
+  serialized_end=356,
 )
 
 
@@ -199,42 +182,42 @@ _M2N_RESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='errorStr', full_name='node.M2N_Response.errorStr', index=1,
-      number=2, type=9, cpp_type=9, label=1,
+      name='errorCode', full_name='node.M2N_Response.errorCode', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='errorStr', full_name='node.M2N_Response.errorStr', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='nodeConnectRes', full_name='node.M2N_Response.nodeConnectRes', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='getNodeIdRes', full_name='node.M2N_Response.getNodeIdRes', index=3,
+      name='nodeConnectRes', full_name='node.M2N_Response.nodeConnectRes', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='getNodeListRes', full_name='node.M2N_Response.getNodeListRes', index=4,
+      name='nodeDisconnRes', full_name='node.M2N_Response.nodeDisconnRes', index=4,
       number=5, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='registerStaticElementRes', full_name='node.M2N_Response.registerStaticElementRes', index=5,
+      name='getNodeListRes', full_name='node.M2N_Response.getNodeListRes', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='registerDynamicElementRes', full_name='node.M2N_Response.registerDynamicElementRes', index=6,
+      name='registerElementRes', full_name='node.M2N_Response.registerElementRes', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -266,8 +249,8 @@ _M2N_RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=441,
-  serialized_end=891,
+  serialized_start=359,
+  serialized_end=748,
 )
 
 
@@ -279,29 +262,15 @@ _N2M_NODECONNECTREQ = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='hasNodeId', full_name='node.N2M_NodeConnectReq.hasNodeId', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='nodeId', full_name='node.N2M_NodeConnectReq.nodeId', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='host', full_name='node.N2M_NodeConnectReq.host', index=2,
-      number=3, type=9, cpp_type=9, label=1,
+      name='host', full_name='node.N2M_NodeConnectReq.host', index=0,
+      number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='port', full_name='node.N2M_NodeConnectReq.port', index=3,
-      number=4, type=5, cpp_type=1, label=1,
+      name='port', full_name='node.N2M_NodeConnectReq.port', index=1,
+      number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -318,8 +287,8 @@ _N2M_NODECONNECTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=893,
-  serialized_end=976,
+  serialized_start=750,
+  serialized_end=798,
 )
 
 
@@ -330,56 +299,8 @@ _M2N_NODECONNECTRES = _descriptor.Descriptor(
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=978,
-  serialized_end=998,
-)
-
-
-_N2M_GETNODEIDREQ = _descriptor.Descriptor(
-  name='N2M_GetNodeIdReq',
-  full_name='node.N2M_GetNodeIdReq',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1000,
-  serialized_end=1018,
-)
-
-
-_M2N_GETNODEIDRES = _descriptor.Descriptor(
-  name='M2N_GetNodeIdRes',
-  full_name='node.M2N_GetNodeIdRes',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
     _descriptor.FieldDescriptor(
-      name='nodeId', full_name='node.M2N_GetNodeIdRes.nodeId', index=0,
+      name='nodeId', full_name='node.M2N_NodeConnectRes.nodeId', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -397,14 +318,14 @@ _M2N_GETNODEIDRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1020,
-  serialized_end=1054,
+  serialized_start=800,
+  serialized_end=836,
 )
 
 
-_N2M_GETNODELISTREQ = _descriptor.Descriptor(
-  name='N2M_GetNodeListReq',
-  full_name='node.N2M_GetNodeListReq',
+_N2M_NODEDISCONNREQ = _descriptor.Descriptor(
+  name='N2M_NodeDisconnReq',
+  full_name='node.N2M_NodeDisconnReq',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
@@ -421,8 +342,32 @@ _N2M_GETNODELISTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1056,
-  serialized_end=1076,
+  serialized_start=838,
+  serialized_end=858,
+)
+
+
+_M2N_NODEDISCONNRES = _descriptor.Descriptor(
+  name='M2N_NodeDisconnRes',
+  full_name='node.M2N_NodeDisconnRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=860,
+  serialized_end=880,
 )
 
 
@@ -466,8 +411,32 @@ _M2N_NODEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1078,
-  serialized_end=1136,
+  serialized_start=882,
+  serialized_end=940,
+)
+
+
+_N2M_GETNODELISTREQ = _descriptor.Descriptor(
+  name='N2M_GetNodeListReq',
+  full_name='node.N2M_GetNodeListReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=942,
+  serialized_end=962,
 )
 
 
@@ -479,7 +448,7 @@ _M2N_GETNODELISTRES = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='nodes', full_name='node.M2N_GetNodeListRes.nodes', index=0,
+      name='nodeInfos', full_name='node.M2N_GetNodeListRes.nodeInfos', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -497,27 +466,72 @@ _M2N_GETNODELISTRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1138,
-  serialized_end=1193,
+  serialized_start=964,
+  serialized_end=1023,
 )
 
 
-_N2M_REGISTERSTATICELEMENTREQ = _descriptor.Descriptor(
-  name='N2M_RegisterStaticElementReq',
-  full_name='node.N2M_RegisterStaticElementReq',
+_N2M_REGISTERELEMENTREQ = _descriptor.Descriptor(
+  name='N2M_RegisterElementReq',
+  full_name='node.N2M_RegisterElementReq',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='nodeId', full_name='node.N2M_RegisterStaticElementReq.nodeId', index=0,
+      name='nodeId', full_name='node.N2M_RegisterElementReq.nodeId', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='guid', full_name='node.N2M_RegisterStaticElementReq.guid', index=1,
+      name='isStatic', full_name='node.N2M_RegisterElementReq.isStatic', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='guid', full_name='node.N2M_RegisterElementReq.guid', index=2,
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1025,
+  serialized_end=1097,
+)
+
+
+_M2N_REGISTERELEMENTRES = _descriptor.Descriptor(
+  name='M2N_RegisterElementRes',
+  full_name='node.M2N_RegisterElementRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='isStatic', full_name='node.M2N_RegisterElementRes.isStatic', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='guid', full_name='node.M2N_RegisterElementRes.guid', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -535,94 +549,8 @@ _N2M_REGISTERSTATICELEMENTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1195,
-  serialized_end=1255,
-)
-
-
-_M2N_REGISTERSTATICELEMENTRES = _descriptor.Descriptor(
-  name='M2N_RegisterStaticElementRes',
-  full_name='node.M2N_RegisterStaticElementRes',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1257,
-  serialized_end=1287,
-)
-
-
-_N2M_REGISTERDYNAMICELEMENTREQ = _descriptor.Descriptor(
-  name='N2M_RegisterDynamicElementReq',
-  full_name='node.N2M_RegisterDynamicElementReq',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='nodeId', full_name='node.N2M_RegisterDynamicElementReq.nodeId', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1289,
-  serialized_end=1336,
-)
-
-
-_M2N_REGISTERDYNAMICELEMENTRES = _descriptor.Descriptor(
-  name='M2N_RegisterDynamicElementRes',
-  full_name='node.M2N_RegisterDynamicElementRes',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='guid', full_name='node.M2N_RegisterDynamicElementRes.guid', index=0,
-      number=1, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1338,
-  serialized_end=1383,
+  serialized_start=1099,
+  serialized_end=1155,
 )
 
 
@@ -652,8 +580,8 @@ _N2M_UNREGISTERELEMENTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1385,
-  serialized_end=1425,
+  serialized_start=1157,
+  serialized_end=1197,
 )
 
 
@@ -676,8 +604,8 @@ _M2N_UNREGISTERELEMENTRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1427,
-  serialized_end=1453,
+  serialized_start=1199,
+  serialized_end=1225,
 )
 
 
@@ -707,27 +635,27 @@ _N2M_QUERYELEMENTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1455,
-  serialized_end=1490,
+  serialized_start=1227,
+  serialized_end=1262,
 )
 
 
-_N2M_QUERYELEMENTRES = _descriptor.Descriptor(
-  name='N2M_QueryElementRes',
-  full_name='node.N2M_QueryElementRes',
+_M2N_QUERYELEMENTRES = _descriptor.Descriptor(
+  name='M2N_QueryElementRes',
+  full_name='node.M2N_QueryElementRes',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='guid', full_name='node.N2M_QueryElementRes.guid', index=0,
+      name='guid', full_name='node.M2N_QueryElementRes.guid', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='nodeId', full_name='node.N2M_QueryElementRes.nodeId', index=1,
+      name='nodeId', full_name='node.M2N_QueryElementRes.nodeId', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -745,42 +673,38 @@ _N2M_QUERYELEMENTRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1492,
-  serialized_end=1543,
+  serialized_start=1264,
+  serialized_end=1315,
 )
 
 _N2M_REQUEST.fields_by_name['nodeConnectReq'].message_type = _N2M_NODECONNECTREQ
-_N2M_REQUEST.fields_by_name['getNodeIdReq'].message_type = _N2M_GETNODEIDREQ
+_N2M_REQUEST.fields_by_name['getNodeIdReq'].message_type = _N2M_NODEDISCONNREQ
 _N2M_REQUEST.fields_by_name['getNodeListReq'].message_type = _N2M_GETNODELISTREQ
-_N2M_REQUEST.fields_by_name['registerStaticElementReq'].message_type = _N2M_REGISTERSTATICELEMENTREQ
-_N2M_REQUEST.fields_by_name['registerDynamicElementReq'].message_type = _N2M_REGISTERDYNAMICELEMENTREQ
+_N2M_REQUEST.fields_by_name['registerElementReq'].message_type = _N2M_REGISTERELEMENTREQ
 _N2M_REQUEST.fields_by_name['unregisterElementReq'].message_type = _N2M_UNREGISTERELEMENTREQ
 _N2M_REQUEST.fields_by_name['queryElementReq'].message_type = _N2M_QUERYELEMENTREQ
 _M2N_RESPONSE.fields_by_name['nodeConnectRes'].message_type = _M2N_NODECONNECTRES
-_M2N_RESPONSE.fields_by_name['getNodeIdRes'].message_type = _M2N_GETNODEIDRES
+_M2N_RESPONSE.fields_by_name['nodeDisconnRes'].message_type = _M2N_NODEDISCONNRES
 _M2N_RESPONSE.fields_by_name['getNodeListRes'].message_type = _M2N_GETNODELISTRES
-_M2N_RESPONSE.fields_by_name['registerStaticElementRes'].message_type = _M2N_REGISTERSTATICELEMENTRES
-_M2N_RESPONSE.fields_by_name['registerDynamicElementRes'].message_type = _M2N_REGISTERDYNAMICELEMENTRES
+_M2N_RESPONSE.fields_by_name['registerElementRes'].message_type = _M2N_REGISTERELEMENTRES
 _M2N_RESPONSE.fields_by_name['unregisterElementRes'].message_type = _M2N_UNREGISTERELEMENTRES
-_M2N_RESPONSE.fields_by_name['queryElementRes'].message_type = _N2M_QUERYELEMENTRES
-_M2N_GETNODELISTRES.fields_by_name['nodes'].message_type = _M2N_NODEINFO
+_M2N_RESPONSE.fields_by_name['queryElementRes'].message_type = _M2N_QUERYELEMENTRES
+_M2N_GETNODELISTRES.fields_by_name['nodeInfos'].message_type = _M2N_NODEINFO
 DESCRIPTOR.message_types_by_name['N2M_Request'] = _N2M_REQUEST
 DESCRIPTOR.message_types_by_name['M2N_Response'] = _M2N_RESPONSE
 DESCRIPTOR.message_types_by_name['N2M_NodeConnectReq'] = _N2M_NODECONNECTREQ
 DESCRIPTOR.message_types_by_name['M2N_NodeConnectRes'] = _M2N_NODECONNECTRES
-DESCRIPTOR.message_types_by_name['N2M_GetNodeIdReq'] = _N2M_GETNODEIDREQ
-DESCRIPTOR.message_types_by_name['M2N_GetNodeIdRes'] = _M2N_GETNODEIDRES
-DESCRIPTOR.message_types_by_name['N2M_GetNodeListReq'] = _N2M_GETNODELISTREQ
+DESCRIPTOR.message_types_by_name['N2M_NodeDisconnReq'] = _N2M_NODEDISCONNREQ
+DESCRIPTOR.message_types_by_name['M2N_NodeDisconnRes'] = _M2N_NODEDISCONNRES
 DESCRIPTOR.message_types_by_name['M2N_NodeInfo'] = _M2N_NODEINFO
+DESCRIPTOR.message_types_by_name['N2M_GetNodeListReq'] = _N2M_GETNODELISTREQ
 DESCRIPTOR.message_types_by_name['M2N_GetNodeListRes'] = _M2N_GETNODELISTRES
-DESCRIPTOR.message_types_by_name['N2M_RegisterStaticElementReq'] = _N2M_REGISTERSTATICELEMENTREQ
-DESCRIPTOR.message_types_by_name['M2N_RegisterStaticElementRes'] = _M2N_REGISTERSTATICELEMENTRES
-DESCRIPTOR.message_types_by_name['N2M_RegisterDynamicElementReq'] = _N2M_REGISTERDYNAMICELEMENTREQ
-DESCRIPTOR.message_types_by_name['M2N_RegisterDynamicElementRes'] = _M2N_REGISTERDYNAMICELEMENTRES
+DESCRIPTOR.message_types_by_name['N2M_RegisterElementReq'] = _N2M_REGISTERELEMENTREQ
+DESCRIPTOR.message_types_by_name['M2N_RegisterElementRes'] = _M2N_REGISTERELEMENTRES
 DESCRIPTOR.message_types_by_name['N2M_UnregisterElementReq'] = _N2M_UNREGISTERELEMENTREQ
 DESCRIPTOR.message_types_by_name['M2N_UnregisterElementRes'] = _M2N_UNREGISTERELEMENTRES
 DESCRIPTOR.message_types_by_name['N2M_QueryElementReq'] = _N2M_QUERYELEMENTREQ
-DESCRIPTOR.message_types_by_name['N2M_QueryElementRes'] = _N2M_QUERYELEMENTRES
+DESCRIPTOR.message_types_by_name['M2N_QueryElementRes'] = _M2N_QUERYELEMENTRES
 DESCRIPTOR.enum_types_by_name['MN_Msg'] = _MN_MSG
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -812,26 +736,19 @@ M2N_NodeConnectRes = _reflection.GeneratedProtocolMessageType('M2N_NodeConnectRe
   ))
 _sym_db.RegisterMessage(M2N_NodeConnectRes)
 
-N2M_GetNodeIdReq = _reflection.GeneratedProtocolMessageType('N2M_GetNodeIdReq', (_message.Message,), dict(
-  DESCRIPTOR = _N2M_GETNODEIDREQ,
+N2M_NodeDisconnReq = _reflection.GeneratedProtocolMessageType('N2M_NodeDisconnReq', (_message.Message,), dict(
+  DESCRIPTOR = _N2M_NODEDISCONNREQ,
   __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.N2M_GetNodeIdReq)
+  # @@protoc_insertion_point(class_scope:node.N2M_NodeDisconnReq)
   ))
-_sym_db.RegisterMessage(N2M_GetNodeIdReq)
+_sym_db.RegisterMessage(N2M_NodeDisconnReq)
 
-M2N_GetNodeIdRes = _reflection.GeneratedProtocolMessageType('M2N_GetNodeIdRes', (_message.Message,), dict(
-  DESCRIPTOR = _M2N_GETNODEIDRES,
+M2N_NodeDisconnRes = _reflection.GeneratedProtocolMessageType('M2N_NodeDisconnRes', (_message.Message,), dict(
+  DESCRIPTOR = _M2N_NODEDISCONNRES,
   __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.M2N_GetNodeIdRes)
+  # @@protoc_insertion_point(class_scope:node.M2N_NodeDisconnRes)
   ))
-_sym_db.RegisterMessage(M2N_GetNodeIdRes)
-
-N2M_GetNodeListReq = _reflection.GeneratedProtocolMessageType('N2M_GetNodeListReq', (_message.Message,), dict(
-  DESCRIPTOR = _N2M_GETNODELISTREQ,
-  __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.N2M_GetNodeListReq)
-  ))
-_sym_db.RegisterMessage(N2M_GetNodeListReq)
+_sym_db.RegisterMessage(M2N_NodeDisconnRes)
 
 M2N_NodeInfo = _reflection.GeneratedProtocolMessageType('M2N_NodeInfo', (_message.Message,), dict(
   DESCRIPTOR = _M2N_NODEINFO,
@@ -840,6 +757,13 @@ M2N_NodeInfo = _reflection.GeneratedProtocolMessageType('M2N_NodeInfo', (_messag
   ))
 _sym_db.RegisterMessage(M2N_NodeInfo)
 
+N2M_GetNodeListReq = _reflection.GeneratedProtocolMessageType('N2M_GetNodeListReq', (_message.Message,), dict(
+  DESCRIPTOR = _N2M_GETNODELISTREQ,
+  __module__ = 'mn_msg_pb2'
+  # @@protoc_insertion_point(class_scope:node.N2M_GetNodeListReq)
+  ))
+_sym_db.RegisterMessage(N2M_GetNodeListReq)
+
 M2N_GetNodeListRes = _reflection.GeneratedProtocolMessageType('M2N_GetNodeListRes', (_message.Message,), dict(
   DESCRIPTOR = _M2N_GETNODELISTRES,
   __module__ = 'mn_msg_pb2'
@@ -847,33 +771,19 @@ M2N_GetNodeListRes = _reflection.GeneratedProtocolMessageType('M2N_GetNodeListRe
   ))
 _sym_db.RegisterMessage(M2N_GetNodeListRes)
 
-N2M_RegisterStaticElementReq = _reflection.GeneratedProtocolMessageType('N2M_RegisterStaticElementReq', (_message.Message,), dict(
-  DESCRIPTOR = _N2M_REGISTERSTATICELEMENTREQ,
+N2M_RegisterElementReq = _reflection.GeneratedProtocolMessageType('N2M_RegisterElementReq', (_message.Message,), dict(
+  DESCRIPTOR = _N2M_REGISTERELEMENTREQ,
   __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.N2M_RegisterStaticElementReq)
+  # @@protoc_insertion_point(class_scope:node.N2M_RegisterElementReq)
   ))
-_sym_db.RegisterMessage(N2M_RegisterStaticElementReq)
+_sym_db.RegisterMessage(N2M_RegisterElementReq)
 
-M2N_RegisterStaticElementRes = _reflection.GeneratedProtocolMessageType('M2N_RegisterStaticElementRes', (_message.Message,), dict(
-  DESCRIPTOR = _M2N_REGISTERSTATICELEMENTRES,
+M2N_RegisterElementRes = _reflection.GeneratedProtocolMessageType('M2N_RegisterElementRes', (_message.Message,), dict(
+  DESCRIPTOR = _M2N_REGISTERELEMENTRES,
   __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.M2N_RegisterStaticElementRes)
+  # @@protoc_insertion_point(class_scope:node.M2N_RegisterElementRes)
   ))
-_sym_db.RegisterMessage(M2N_RegisterStaticElementRes)
-
-N2M_RegisterDynamicElementReq = _reflection.GeneratedProtocolMessageType('N2M_RegisterDynamicElementReq', (_message.Message,), dict(
-  DESCRIPTOR = _N2M_REGISTERDYNAMICELEMENTREQ,
-  __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.N2M_RegisterDynamicElementReq)
-  ))
-_sym_db.RegisterMessage(N2M_RegisterDynamicElementReq)
-
-M2N_RegisterDynamicElementRes = _reflection.GeneratedProtocolMessageType('M2N_RegisterDynamicElementRes', (_message.Message,), dict(
-  DESCRIPTOR = _M2N_REGISTERDYNAMICELEMENTRES,
-  __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.M2N_RegisterDynamicElementRes)
-  ))
-_sym_db.RegisterMessage(M2N_RegisterDynamicElementRes)
+_sym_db.RegisterMessage(M2N_RegisterElementRes)
 
 N2M_UnregisterElementReq = _reflection.GeneratedProtocolMessageType('N2M_UnregisterElementReq', (_message.Message,), dict(
   DESCRIPTOR = _N2M_UNREGISTERELEMENTREQ,
@@ -896,12 +806,12 @@ N2M_QueryElementReq = _reflection.GeneratedProtocolMessageType('N2M_QueryElement
   ))
 _sym_db.RegisterMessage(N2M_QueryElementReq)
 
-N2M_QueryElementRes = _reflection.GeneratedProtocolMessageType('N2M_QueryElementRes', (_message.Message,), dict(
-  DESCRIPTOR = _N2M_QUERYELEMENTRES,
+M2N_QueryElementRes = _reflection.GeneratedProtocolMessageType('M2N_QueryElementRes', (_message.Message,), dict(
+  DESCRIPTOR = _M2N_QUERYELEMENTRES,
   __module__ = 'mn_msg_pb2'
-  # @@protoc_insertion_point(class_scope:node.N2M_QueryElementRes)
+  # @@protoc_insertion_point(class_scope:node.M2N_QueryElementRes)
   ))
-_sym_db.RegisterMessage(N2M_QueryElementRes)
+_sym_db.RegisterMessage(M2N_QueryElementRes)
 
 
 DESCRIPTOR.has_options = True

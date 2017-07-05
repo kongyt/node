@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='nn_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x0cnn_msg.proto\x12\x04node\"?\n\x0bN2N_Request\x12\x30\n\x0enodeConnectReq\x18\x01 \x01(\x0b\x32\x18.node.N2N_NodeConnectReq\"b\n\x0cN2N_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x10\n\x08\x65rrorStr\x18\x02 \x01(\t\x12\x30\n\x0enodeConnectRes\x18\x03 \x01(\x0b\x32\x18.node.N2N_NodeConnectRes\"@\n\x12N2N_NodeConnectReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04host\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"\x14\n\x12N2N_NodeConnectRes*@\n\x06NN_Msg\x12\x1a\n\x14N2N_Node_Connect_Req\x10\x81\x80\x08\x12\x1a\n\x14N2N_Node_Connect_Res\x10\x82\x80\x08\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x0cnn_msg.proto\x12\x04node\"?\n\x0bN2N_Request\x12\x30\n\x0enodeConnectReq\x18\x01 \x01(\x0b\x32\x18.node.N2N_NodeConnectReq\"u\n\x0cN2N_Response\x12\x0e\n\x06result\x18\x01 \x01(\x08\x12\x11\n\terrorCode\x18\x02 \x01(\x05\x12\x10\n\x08\x65rrorStr\x18\x03 \x01(\t\x12\x30\n\x0enodeConnectRes\x18\x04 \x01(\x0b\x32\x18.node.N2N_NodeConnectRes\"@\n\x12N2N_NodeConnectReq\x12\x0e\n\x06nodeId\x18\x01 \x01(\x05\x12\x0c\n\x04host\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\"\x14\n\x12N2N_NodeConnectRes*@\n\x06NN_Msg\x12\x1a\n\x14N2N_Node_Connect_Req\x10\x81\x80\x08\x12\x1a\n\x14N2N_Node_Connect_Res\x10\x82\x80\x08\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
 _NN_MSG = _descriptor.EnumDescriptor(
@@ -40,8 +40,8 @@ _NN_MSG = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=275,
-  serialized_end=339,
+  serialized_start=294,
+  serialized_end=358,
 )
 _sym_db.RegisterEnumDescriptor(_NN_MSG)
 
@@ -97,15 +97,22 @@ _N2N_RESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='errorStr', full_name='node.N2N_Response.errorStr', index=1,
-      number=2, type=9, cpp_type=9, label=1,
+      name='errorCode', full_name='node.N2N_Response.errorCode', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='errorStr', full_name='node.N2N_Response.errorStr', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='nodeConnectRes', full_name='node.N2N_Response.nodeConnectRes', index=2,
-      number=3, type=11, cpp_type=10, label=1,
+      name='nodeConnectRes', full_name='node.N2N_Response.nodeConnectRes', index=3,
+      number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -123,7 +130,7 @@ _N2N_RESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=87,
-  serialized_end=185,
+  serialized_end=204,
 )
 
 
@@ -167,8 +174,8 @@ _N2N_NODECONNECTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=187,
-  serialized_end=251,
+  serialized_start=206,
+  serialized_end=270,
 )
 
 
@@ -191,8 +198,8 @@ _N2N_NODECONNECTRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=253,
-  serialized_end=273,
+  serialized_start=272,
+  serialized_end=292,
 )
 
 _N2N_REQUEST.fields_by_name['nodeConnectReq'].message_type = _N2N_NODECONNECTREQ

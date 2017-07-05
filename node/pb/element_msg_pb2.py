@@ -20,29 +20,29 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='element_msg.proto',
   package='node',
   syntax='proto2',
-  serialized_pb=_b('\n\x11\x65lement_msg.proto\x12\x04node\"\\\n\nElementMsg\x12\r\n\x05msgId\x18\x01 \x01(\x05\x12\x14\n\x0c\x66rom_element\x18\x02 \x01(\x04\x12\x12\n\nto_element\x18\x03 \x01(\x04\x12\x15\n\rserializeData\x18\x04 \x01(\t\"\x13\n\x04Helo\x12\x0b\n\x03txt\x18\x01 \x01(\t*\x15\n\x06\x45leMsg\x12\x0b\n\x07\x45M_HELO\x10\x01\x42\x1a\n\x18\x63om.kongyt.node.messages')
+  serialized_pb=_b('\n\x11\x65lement_msg.proto\x12\x04node\"I\n\nElementMsg\x12\r\n\x05msgId\x18\x01 \x01(\x05\x12\x0f\n\x07\x65leFrom\x18\x02 \x01(\x04\x12\r\n\x05\x65leTo\x18\x03 \x01(\x04\x12\x0c\n\x04\x64\x61ta\x18\x04 \x01(\x0c\"\x13\n\x04Helo\x12\x0b\n\x03txt\x18\x01 \x01(\t*\x17\n\x07\x45le_Msg\x12\x0c\n\x08\x45le_Helo\x10\x01\x42\x1a\n\x18\x63om.kongyt.node.messages')
 )
 
-_ELEMSG = _descriptor.EnumDescriptor(
-  name='EleMsg',
-  full_name='node.EleMsg',
+_ELE_MSG = _descriptor.EnumDescriptor(
+  name='Ele_Msg',
+  full_name='node.Ele_Msg',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='EM_HELO', index=0, number=1,
+      name='Ele_Helo', index=0, number=1,
       options=None,
       type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=142,
-  serialized_end=163,
+  serialized_start=123,
+  serialized_end=146,
 )
-_sym_db.RegisterEnumDescriptor(_ELEMSG)
+_sym_db.RegisterEnumDescriptor(_ELE_MSG)
 
-EleMsg = enum_type_wrapper.EnumTypeWrapper(_ELEMSG)
-EM_HELO = 1
+Ele_Msg = enum_type_wrapper.EnumTypeWrapper(_ELE_MSG)
+Ele_Helo = 1
 
 
 
@@ -61,23 +61,23 @@ _ELEMENTMSG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='from_element', full_name='node.ElementMsg.from_element', index=1,
+      name='eleFrom', full_name='node.ElementMsg.eleFrom', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='to_element', full_name='node.ElementMsg.to_element', index=2,
+      name='eleTo', full_name='node.ElementMsg.eleTo', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='serializeData', full_name='node.ElementMsg.serializeData', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      name='data', full_name='node.ElementMsg.data', index=3,
+      number=4, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -94,7 +94,7 @@ _ELEMENTMSG = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=27,
-  serialized_end=119,
+  serialized_end=100,
 )
 
 
@@ -124,13 +124,13 @@ _HELO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=121,
-  serialized_end=140,
+  serialized_start=102,
+  serialized_end=121,
 )
 
 DESCRIPTOR.message_types_by_name['ElementMsg'] = _ELEMENTMSG
 DESCRIPTOR.message_types_by_name['Helo'] = _HELO
-DESCRIPTOR.enum_types_by_name['EleMsg'] = _ELEMSG
+DESCRIPTOR.enum_types_by_name['Ele_Msg'] = _ELE_MSG
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ElementMsg = _reflection.GeneratedProtocolMessageType('ElementMsg', (_message.Message,), dict(
